@@ -37,22 +37,22 @@ const SignIn = () => {
             <div>
               <label
                 htmlFor="email-or-phone"
-                className="font-semibold text-gray-900"
+                className="ml-2 font-semibold text-gray-900"
               >
-                Email address or Phone number
+                Email address
               </label>
               <input
                 id="email-or-phone"
                 name="emailOrPhone"
                 type="text"
                 required
-                className="input appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="input mt-5 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 value={form.emailOrPhone}
                 onChange={handleChange}
               />
             </div>
             <div>
-              <label htmlFor="password" className="font-semibold text-gray-900">
+              <label htmlFor="password" className="ml-2 font-semibold text-gray-900">
                 Password
               </label>
               <input
@@ -60,7 +60,7 @@ const SignIn = () => {
                 name="password"
                 type="password"
                 required
-                className="input appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="input mt-5 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 value={form.password}
                 onChange={handleChange}
               />
@@ -73,7 +73,7 @@ const SignIn = () => {
             <p className="text-center text-gray-500 text-sm">
               Don't have an account?{" "}
               <Link
-                to="/signup"
+                to="/register"
                 className="font-medium text-indigo-600 hover:text-indigo-500"
               >
                 Sign up
