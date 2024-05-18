@@ -1,18 +1,9 @@
-import { useState } from "react";
 import React from "react";
 
-
 const ProductCard = (props) => {
-
-  const [isPopOutOpen, setIsPopOutOpen] = useState(false);
-
-  const togglePopOut = () => {
-    setIsPopOutOpen(!isPopOutOpen);
-  };
-
   const {photos,name,sellerName,discrtiption,price} = props.data
   return (
-    <div id="product-card" onClick={togglePopOut}>
+    <div id="product-card">
       <img src={photos} alt={name} />
       <div className="content">
         <div className="left">

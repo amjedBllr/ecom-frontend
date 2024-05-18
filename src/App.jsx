@@ -1,6 +1,6 @@
 import React from "react";
-import { useContext, createContext, useState, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { createContext, useState, useEffect } from "react";
+import { Routes, Route , useNavigate } from "react-router-dom";
 import axios from "axios";
 
 //?client imports
@@ -10,6 +10,7 @@ import ClientLayout from "./layouts/ClientLayout";
 import ClientInfo from "./pages/client/ClientInfo";
 import SearchPage from "./pages/client/SearchPage";
 import Payment from "./pages/client/Payment.jsx";
+import CheckOut from "./pages/client/CheckOut.jsx";
 
 //?seller imports
 import SellerLayout from "./layouts/SellerLayout";
@@ -20,6 +21,8 @@ import SellerProfile from "./pages/seller/SellerProfile";
 import SellerInfo from "./pages/seller/SellerInfo";
 
 //?general imports
+import CategoryPage from "./pages/seller/CategoryPage.jsx";
+import ProductDetails from "./components/products/ProductDetails.jsx";
 import HomePage from "./pages/HomePage";
 import SignIn from "./pages/Auth/SignIn";
 import SignUp from "./pages/Auth/SignUp";
@@ -27,10 +30,13 @@ import ProductPage from "./pages/ProductPage.jsx";
 import AboutUs from "./pages/AboutUs";
 import NotFoundPage from "./pages/NotFoundPage";
 import Loading from "./components/Loading.jsx";
+import Logout from "./pages/Auth/Logout.jsx";
 
 const context = createContext();
 
 function App() {
+
+
   const [serverUrl, setServerUrl] = useState('http://localhost:3000');
   const [userinfo, setUserInfo] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -38,14 +44,17 @@ function App() {
   const [changed, setChanged] = useState(true);
   const [isLoading, setIsLoading] = useState(true); // New state for loading indicator
 
+  const navigate = useNavigate();
+
   useEffect(() => {
       async function fetchData() {
           try {
               const info = await axios.get(`${serverUrl}/api/v1/auth/userinfo`, { withCredentials: true });
               setUserInfo(info.data.data);
               setIsLoggedIn(true);
-              setUserRole(info.data.data.user_info.role);
-              setIsLoading(false); // Set loading to false after fetching data
+              const role = info.data.data.user_info.role
+              setUserRole(role);
+              setIsLoading(false);
           } catch (error) {
               console.log(error);
               setIsLoggedIn(false);
@@ -81,6 +90,7 @@ function App() {
                       <Route path='register' element={<SignUp/>}/>
                       <Route path='register/client' element={<ClientInfo/>}/>
                       <Route path='register/seller' element={<SellerInfo/>}/>
+                      <Route path='logout' element={<Logout/>}/>
                   </Route>
 
                   {/* Authenticated paths */}
@@ -91,9 +101,11 @@ function App() {
                               <Route path='home' element={<ClientHome/>}/>
                               <Route path='about-us' element={<AboutUs/>}/>
                               <Route path='profile' element={<ClientProfile/>}/>
-                              <Route path='product' element={<ProductPage />}/>
+                              <Route path="cart" element={<CheckOut />} />
+                              <Route path="category/:categoryName" element={<CategoryPage />} />
+                              <Route path="product/:id" element={<ProductDetails />} />
                               <Route path='payment/:id' element={<Payment />}/>
-                              <Route path='*' element={<NotFoundPage dest='/client/home'/>}/>
+                              <Route path='*' element={<NotFoundPage/>}/>
                           </Route>
                           <Route path='/client/search' element={<SearchPage/>}/>
                       </>
@@ -105,12 +117,12 @@ function App() {
                           <Route path='/seller' element={<SellerLayout/>}>
                               <Route path='profile' element={<SellerProfile/>}/>
                               <Route path='about-us' element={<AboutUs/>}/>
-                              <Route path='*' element={<NotFoundPage dest='/seller/home/store'/>}/>
+                              <Route path='*' element={<NotFoundPage/>}/>
                           </Route>
                           <Route path='/seller/home' element={<SellerHome/>}>
                               <Route path='store' element={<SellerStore/>}/>
                               <Route path='orders' element={<SellerOrders/>}/>
-                              <Route path='*' element={<NotFoundPage dest='/seller/home/store'/>}/>
+                              <Route path='*' element={<NotFoundPage/>}/>
                           </Route>
                       </>
                   )}
@@ -127,11 +139,11 @@ function App() {
                       </>
                   )}
 
-                  <Route path='*' element={<NotFoundPage dest='/'/>}/>
+                  <Route path='*' element={<NotFoundPage/>}/>
               </Routes>
           )}
       </context.Provider>
   );
 }
 
-export default App;
+export default {App,context};

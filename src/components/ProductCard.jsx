@@ -1,20 +1,24 @@
-const ProductCard = ({ imgUrl, sellerName, name, discrtiption, price }) => {
+import React from "react";
+import { useNavigate } from "react-router-dom";
+const ProductCard = ({id , imgUrl, sellerName, name, discrtiption, price }) => {
+  const product = { imgUrl, sellerName, name, discrtiption, price };
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/client/product/${id||3000}`,{state:product});
+  };
   return (
-    <div className=" flex flex-col transform hover:scale-105 w-[330px] border  ring-2 ring-gray-200 cursor-pointer transition-all duration-500   rounded-xl shadow-lg">
-      <img src={imgUrl} alt={name} className="h-[220px] w-full object-cover" />
-      <div className="flex  px-4 justify-between items-center overflow-hidden border-gray-slate border">
-        <div className="py-4 px-4 flex flex-col">
-          <h1 className="text-lg font-montserrat font-medium text-[#808080]">
-            {sellerName}
-          </h1>
-          <h2 className="text-lg font-montserrat font-medium">{name}</h2>
-          <p className="text-sm font-montserrat font-medium overflow-ellipsis overflow-hidden  h-[40px] text-[#808080] leading-normal">
-            {discrtiption}
-          </p>
+    <div id="product-card" onClick={handleClick}>
+      <img src={imgUrl} alt={name} />
+      <div className="content">
+        <div className="left">
+          <h3>{sellerName}</h3>
+          <h4>{name}</h4>
+          <p>{discrtiption}</p>
         </div>
-        <p className=" text-lg font-montserrat font-medium align-middle w-[]">
-          {price}
-        </p>
+        <div className="right">
+          <p>{price}</p>
+        </div>
       </div>
     </div>
   );

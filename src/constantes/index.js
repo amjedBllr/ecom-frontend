@@ -1,31 +1,43 @@
 export const data = [
   {
-    imgUrl: "../public/images/img_download_1.png",
+    imgUrl:
+      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     sellerName: "dior",
     discrtiption: "100ml of eau de toilette of perfume of Dior",
     productName: "Sauvage perfume",
     price: "20$",
   },
   {
-    imgUrl: "../public/images/img_download_1_275x360.png",
+    imgUrl:
+      "https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=1480&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     sellerName: "nike",
     discrtiption: "a bnw limited edition of nike shoes",
     productName: "Air force 1",
     price: "455$",
   },
   {
-    imgUrl: "../public/images/img_download_1_1.png",
+    imgUrl:
+      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     sellerName: "Seller",
     discrtiption: "book collection of aot anime series",
     productName: "AOT manga collection",
     price: "250$",
   },
   {
-    imgUrl: "../public/images/img_download_1_19.png",
+    imgUrl:
+      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     sellerName: "thewhiteguy",
     discrtiption: "no description",
     productName: "my neighbor ",
     price: "5$",
+  },
+  {
+    imgUrl:
+      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    sellerName: "dior",
+    discrtiption: "100ml of eau de toilette of perfume of Dior",
+    productName: "Sauvage perfume",
+    price: "20$",
   },
 ];
 export const data1 = [
