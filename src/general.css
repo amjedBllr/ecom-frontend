@@ -844,3 +844,57 @@
     font-size: 11px;
     color: #707070;
 }
+
+
+/*! loading page styling*/
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+    margin: 5% 0%;
+  }
+  
+  .loading-circle {
+    width: 80px;
+    height: 80px;
+    border: 8px solid #e35d1e;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  .loading-bar {
+    width: 80%;
+    height: 3px;
+    background-color: #fff;
+    border-radius: 1.5px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: grow 1.5s ease-in-out infinite alternate;
+  }
+  
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes grow {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+  
