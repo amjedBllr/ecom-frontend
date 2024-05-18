@@ -765,6 +765,8 @@
     aspect-ratio:12/16;
     width: 6.5rem;
     border-radius: 10px;
+    object-fit: cover;
+    object-position: center;
 }
 
 #payment-container .disc .name{

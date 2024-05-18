@@ -1,128 +1,131 @@
-import React from 'react'
-import { useParams } from 'react-router-dom'
-import OrderItem from '../../components/OrderItem';
-
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function Payment() {
-
     const { id } = useParams();
+    const navigate = useNavigate();
+    const [cartItem, setCartItem] = useState({});
+    const [order, setOrder] = useState({}); 
+    const [product, setProduct] = useState({}); 
 
-    const nav = useNavigate()
-
-    
-    //!hna dir request bl id ll cart-items blastha
-    const cartItem = {
-        clientId:null,
-        productI: null,
-        quantity: 1,
-        size:32,
-        color: "white",
-        dimension: null
-    } 
-
-    const {
-        clientId,
-        productId,
-        quantity,
-        size ,
-        color,
-        dimension 
-    } = cartItem ;
-
-    const [order , setOrder] = useState({
-        clientId: clientId ,
-        productId: productId ,
-        shippingAddress:'',
-        paymentMethod: '',
-        quantity:quantity,
-        size:size,
-        color:color,
-        dimension:dimension,
-    }) 
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const item = await axios.get(`http://localhost:3000/api/v1/cart-items/${id}`, { withCredentials: true });
+                const product = await axios.get(`https://ecom-backend-nv4n.onrender.com/api/v1/products/${item.data.data.productId}`);
+                
+                setCartItem(item.data.data);
+                setProduct(product.data.data);
+                
+                const { clientId, productId, quantity, size, color, dimension } = item.data.data;
+                
+                setOrder({
+                    clientId,
+                    productId,
+                    shippingAddress: '',
+                    paymentMethod: '',
+                    quantity,
+                    size,
+                    color,
+                    dimension,
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        fetchData();
+    }, [id]);
 
     const formHandler = (e) => {
         const { name, value } = e.target;
-        setOrder(prev => {
-            return {
-                ...prev,
-                [name]: value
-            };
-        });
-        console.log(order)
+        setOrder(prev => ({
+            ...prev,
+            [name]: value,
+        }));
     };
-    
-    const confirmHandler = (e) => {
-        //!dir request llserver bl axios takhdm fiha order
-        //!zid wahda tnhi biha l cart item
-        nav('/client/home')
+
+    const confirmHandler = async (e) => {
+        e.preventDefault();
+        try {
+            await axios.post('http://localhost:3000/api/v1/orders', order, { withCredentials: true });
+            navigate('/client/home');
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const cancelHandler = (e) => {
-        nav('/client/home')
+        e.preventDefault();
+        navigate('/client/home');
     };
-    
 
-    let paymentMethodForm = ''
-
-    if (['creditCard', 'paypal', 'edahabia'].includes(order.paymentMethod)){
-        paymentMethodForm = 
-        <>
-            <label className='l1'>Credit card number :</label>
-            <input type='text'/>
-            <label className='l1'>Expiry month :</label>
-            <input type='text'/>
-            <label className='l1'>CCV :</label>
-            <input type='text'/>
-        </>
-            
+    let paymentMethodForm = '';
+    if (['creditCard', 'paypal', 'edahabia'].includes(order.paymentMethod)) {
+        paymentMethodForm = (
+            <>
+                <label className='l1'>Credit card number :</label>
+                <input type='text' />
+                <label className='l1'>Expiry month :</label>
+                <input type='text' />
+                <label className='l1'>CCV :</label>
+                <input type='text' />
+            </>
+        );
     }
 
-
-  return (
-    <div id='payment-container'>
-        <div className="payment-card">
-            <div className='recap'>
-                    <OrderItem productId={order.productId}/>
-                    <h3 className="total-price">Your total is : <span>25500 DA</span> </h3>
+    return (
+        <div id='payment-container'>
+            <div className="payment-card">
+                <div className='recap'>
+                    <div className='item'>
+                        {product.photos && <img src={product.photos[0]} alt="Product" />}
+                        <div className="disc">
+                            <h4 className='name'>{product.name || 'Product'}</h4>
+                            {order.size && <p className='size'><span>Size : </span>{order.size}</p>}
+                            {order.color && <p className='color'><span>Color : </span>{order.color}</p>}
+                            {order.dimension && <p className='dim'><span>Dimension : </span>{order.dimension}"</p>}
+                            <div className='q-p'>
+                                <p className='qnt'><span>Quantity : </span>x{order.quantity}</p>
+                                <h3 className="price"><span>Price : </span>{product.price} DA</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 className="total-price">Your total is : <span>{order.quantity * product.price} DA</span></h3>
+                </div>
+                <hr />
+                <form method='POST' onSubmit={confirmHandler}>
+                    <label className='l1' htmlFor="shippingAddress">Shipping address :</label>
+                    <input onChange={formHandler} value={order.shippingAddress} type='text' name='shippingAddress' id='shippingAddress' />
+                    <label className='l1' htmlFor="paymentMethod">Payment method :</label>
+                    <br />
+                    <div className='method'>
+                        <div>
+                            <input onChange={formHandler} type='radio' id='creditCard' value='creditCard' name='paymentMethod' />
+                            <label className='l2' htmlFor='creditCard'>Credit card</label>
+                        </div>
+                        <div>
+                            <input onChange={formHandler} type='radio' id='paypal' value='paypal' name='paymentMethod' />
+                            <label className='l2' htmlFor='paypal'>Paypal</label>
+                        </div>
+                        <div>
+                            <input onChange={formHandler} type='radio' id='edahabia' value='edahabia' name='paymentMethod' />
+                            <label className='l2' htmlFor='edahabia'>Edahabia</label>
+                        </div>
+                        <div>
+                            <input onChange={formHandler} type='radio' id='cod' value='cod' name='paymentMethod' />
+                            <label className='l2' htmlFor='cod'>C.O.D <span>(on Delivery)</span></label>
+                        </div>
+                    </div>
+                    <br /><br />
+                    {paymentMethodForm}
+                    <br /><br /><br />
+                    <button type="submit" className='confirm-btn'>Confirm</button>
+                    <button onClick={cancelHandler} className='cancel-btn'>Cancel</button>
+                </form>
             </div>
-            <hr/>
-            <form method='POST'>
-                <label className='l1' htmlFor="shippingAddress">Shipping address :</label>
-                <input onChange={formHandler} value={order.shippingAddress} type='text' name='shippingAddress' id='shippingAddress'/>
-                <label className='l1' htmlFor="paymentMethod">Payment method :</label>
-                <br/>
-                <div className='method'>
-                <div>
-                    <input onChange={formHandler} type='radio' id='creditCard' value='creditCard' name='paymentMethod'/>
-                    <label className='l2' htmlFor='creditCard'>Credit card</label>
-                </div>
-                <div>
-                    <input onChange={formHandler} type='radio' id='paypal' value='paypal' name='paymentMethod'/>
-                    <label className='l2' htmlFor='paypal'>Paypal</label>
-                </div>
-                <div>
-                    <input onChange={formHandler} type='radio' id='edahabia' value='edahabia' name='paymentMethod'/>
-                    <label className='l2' htmlFor='edahabia'>Edahabia</label>
-                </div>
-                <div>
-                    <input onChange={formHandler} type='radio' id='cod' value='cod' name='paymentMethod'/>
-                    <label className='l2' htmlFor='cod'>C.O.D <span>(on Delivery)</span></label>
-                </div>
-            </div>      
-            <br/><br/>
-
-            {paymentMethodForm}
-            
-            <br/><br/><br/>
-            <button onClick={ confirmHandler } className='confirm-btn'>Confirm</button>
-            <button onClick={ cancelHandler } className='cancel-btn'>Cancel</button>
-
-            </form>
         </div>
-    </div>
-  )
+    );
 }
 
-export default Payment
+export default Payment;

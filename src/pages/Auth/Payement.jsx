@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 const Payment = ({ handleCardData }) => {
+  
   const [paymentMethod, setPaymentMethod] = useState("visa");
   const [cardInfo, setCardInfo] = useState({
     fullName: "",
