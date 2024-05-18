@@ -289,7 +289,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 30%;
+    width: 32%;
     margin-left: 5%;
     padding: 2%;
     margin-bottom: 5%;
@@ -315,6 +315,14 @@
     font-weight: 600;
     font-size: 21px;
 }
+
+#store-info .seller-card .name span{
+    font-weight: 500;
+    font-size: 16px;
+    color: rgb(47, 142, 224);
+    padding-left: 1rem;
+}
+
 #store-info .seller-card .email , .seller-card .rating{
     font-size: 15px;
     font-weight: 500;

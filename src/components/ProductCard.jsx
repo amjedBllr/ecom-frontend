@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-const ProductCard = ({id , imgUrl, sellerName, name, discrtiption, price }) => {
-  const product = { imgUrl, sellerName, name, discrtiption, price };
+const ProductCard = (props) => {
+  const { photos, productName, discrtiption, price } = props.data;
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -9,11 +9,11 @@ const ProductCard = ({id , imgUrl, sellerName, name, discrtiption, price }) => {
   };
   return (
     <div id="product-card" onClick={handleClick}>
-      <img src={imgUrl} alt={name} />
+      <img src={photos[0]} alt={name} />
       <div className="content">
         <div className="left">
-          <h3>{sellerName}</h3>
-          <h4>{name}</h4>
+          <h3>seller name</h3>
+          <h4>{productName}</h4>
           <p>{discrtiption}</p>
         </div>
         <div className="right">
