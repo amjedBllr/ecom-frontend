@@ -1,8 +1,23 @@
 import React from 'react';
 import ProductCard from './../../components/ProductCard2';
+import { useState } from "react";
+import { FaUserCircle } from "react-icons/fa";
+import AddProduct from '../../components/AddProduct';
 
 
 const SellerStore = () => {
+
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => {
+        setIsModalOpen(true);
+      };
+    
+      const closeModal = () => {
+        setIsModalOpen(false);
+      };
+
     return (
         <div id='seller-store'>
             <section id='store-info'>
@@ -20,7 +35,8 @@ const SellerStore = () => {
             </section>
             <section id='store-prod'>
                 <h2>Products</h2>
-                <button>Add product  +</button>
+                <button onClick={openModal}>Add product  +</button>
+                {isModalOpen && (<AddProduct closeModal={closeModal}/>)}
                 <hr/>
                 <div className='products'>
                     {/* Corrected props */}
