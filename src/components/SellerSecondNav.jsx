@@ -1,20 +1,23 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect , useState } from 'react';
+import { Link , useLocation} from 'react-router-dom';
 
 const SellerSecondNav = () => {
-  let [Url, setUrl] = useState('store');
+
+  const location = useLocation();
+
   let selected = {
     backgroundColor: '#E9E9E9'
   };
 
+
   return (
     <>
       <nav id='sellerSecondNav'>
-        <li style={Url === 'store' ? selected : {}}>
-          <Link to='store' className='link'><button onClick={_ => { setUrl('store') }}>Store page</button></Link>
+        <li style={location.pathname==='/seller/home/store' ? selected : {}}>
+          <Link to='store' className='link'><button>Store page</button></Link>
         </li>
-        <li style={Url === 'orders' ? selected : {}}>
-          <Link to='orders' className='link'><button onClick={_ => { setUrl('orders') }}>Purchase orders</button></Link>
+        <li style={location.pathname ==='/seller/home/orders' ? selected : {}}>
+          <Link to='orders' className='link'><button>Purchase orders</button></Link>
         </li>
       </nav>
     </>

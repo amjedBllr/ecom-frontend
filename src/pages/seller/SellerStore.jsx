@@ -53,7 +53,7 @@ const SellerStore = () => {
                 <h2>Store information</h2>
                 <hr/>
                 <div className="seller-card">
-                    <img src={userinfo.user_info.pfp} alt="Seller Profile"/>
+                    <img src={userinfo.user_info.pfp||'/images/pfp_placeholder.jpg'} />
                     <div>
                         <h4 className="name">{seller.businessName} <span>{seller.sellerStatus}</span></h4>
                         <p className="type">{seller.sellerType}</p>
