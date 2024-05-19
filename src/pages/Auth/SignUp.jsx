@@ -41,7 +41,7 @@ const SignUp = () => {
   };
 
   
-  const {serverUrl , setChanged , userinfo} = useContext(App.context)
+  const {serverUrl , setChanged } = useContext(App.context)
 
   const handleSubmit = async (e) => {
     e.preventDefault();

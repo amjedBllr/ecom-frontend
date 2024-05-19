@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useContext , useEffect } from "react";
+import App from '../../App.jsx'
 
 const ClientInfo = () => {
   const [clientInfoForm, setClientInfoForm] = useState({
@@ -93,6 +96,12 @@ const ClientInfo = () => {
   };
 
   // ...
+
+  const {serverUrl , userRole , userinfo} = useContext(App.context)
+
+  useEffect(()=>{
+    if(userRole === 'seller') navigate('/register/seller')
+  },[])
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-custom-background rounded bg-cover bg-no-repeat px-4 sm:px-10 lg:px-8 py-12 ">
