@@ -1,107 +1,60 @@
-import { useState } from "react";
+import React, { useState , useContext , useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useContext , useEffect } from "react";
-import App from '../../App.jsx'
+import App from "../../App.jsx";
 
 const ClientInfo = () => {
   const [clientInfoForm, setClientInfoForm] = useState({
-    fullName: "",
+    fullname: "",
     phoneNumber: "",
-    delievryAdress: "",
-    paymentAccountNumber: "",
-    payemntType: "",
+    shippingAddress: "",
+    creditCardNumber: "",
+    paypalEmail: "",
+    edahabiaNumber: ""
   });
+
   const [paymentMethod, setPaymentMethod] = useState("visa");
-  const [cardInfo, setCardInfo] = useState({
-    fullName: "",
-    cardNumber: "",
-    expiryDate: "",
-    cvv: "",
-  });
-  const [paypalEmail, setPaypalEmail] = useState("");
-
-  const handleCardInfoChange = (e) => {
-    setCardInfo({
-      ...cardInfo,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handlePaypalEmailChange = (e) => {
-    setPaypalEmail(e.target.value);
-  };
 
   const navigate = useNavigate();
-  // const location = useLocation();
-  // const formData = location.state.formData;
 
-  // handle the Changes of the visa card
-  const handleCardData = (data) => {
-    setClientInfoForm({
-      ...clientInfoForm,
-      paymentAccountNumber: data.cardNumber, // replace 'cardNumber' with the actual property name in the data object
-      // add other properties from the data object if needed
-    });
-  };
-
-  // handle Changes on the form
   const handleChange = (e) => {
     setClientInfoForm({
       ...clientInfoForm,
       [e.target.name]: e.target.value,
     });
-    console.log(clientInfoForm);
   };
 
-  const handleSubmit = (event) => {
+  const { serverUrl, userRole } = useContext(App.context);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // if (clientInfoForm.password !== clientInfoForm.confirmPassword) {
-    //   alert("Passwords do not match");
-    //   return;
-    // }
+    let updatedForm
+    if(paymentMethod==='visa') updatedForm = {...clientInfoForm , edahabiaNumber:"" , paypalEmail:""}
+    if(paymentMethod==='edahabia') updatedForm = {...clientInfoForm , creditCardNumber:"" , paypalEmail:""}
+    if(paymentMethod==='paypal') updatedForm = {...clientInfoForm , edahabiaNumber:"" , creditCardNumber:""}
+    else updatedForm = clientInfoForm
 
-    // for (let field in clientInfoForm) {
-    //   if (!clientInfoForm[field]) {
-    //     alert("All fields must be filled");
-    //     return;
-    //   }
-    // }
+    console.log(updatedForm)
 
-    // // Send the form data to the backend
-    // // Replace this with your actual backend service call
-    // fetch("/api/signup", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(clientInfoForm),
-    // })
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     if (data.success) {
-    //       // Navigate to the ClientInfoPage
-    //       history.push("/clientinfopage");
-    //     } else {
-    //       alert("Error: " + data.message);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error:", error);
-    //   });
-
-    // After Submit
-    navigate("/home");
+    try {
+      const client  = await axios.post(
+        `${serverUrl}/api/v1/auth/register/client`,
+         updatedForm,
+        { withCredentials: true }
+      );
+      console.log(client);
+      
+      navigate('/client/home')
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  // ...
-
-  const {serverUrl , userRole , userinfo} = useContext(App.context)
-
-  useEffect(()=>{
-    if(userRole === 'seller') navigate('/register/seller')
-  },[])
+  
+  useEffect(() => {
+    if (userRole === "seller") navigate("/register/seller");
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-custom-background rounded bg-cover bg-no-repeat px-4 sm:px-10 lg:px-8 py-12 ">
@@ -111,26 +64,28 @@ const ClientInfo = () => {
             Client Information
           </h2>
         </div>
-        <form className="space-y-6 flex flex-col gap-4" onSubmit={handleSubmit}>
-          <input type="hidden" name="remember" value="true" />
+        <form
+          className="space-y-6 flex flex-col gap-4"
+          onSubmit={handleSubmit}
+        >
           <div className="rounded-md font-montserrat flex flex-col gap-4">
             <div>
-              <label htmlFor="fullName" className="font-semibold text-gray-900">
+              <label htmlFor="fullname" className="font-semibold text-gray-900">
                 Full name
               </label>
               <input
-                id="fullName"
-                name="fullName"
+                id="fullname"
+                name="fullname"
                 type="text"
                 required
-                className="input appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                value={clientInfoForm.fullName}
+                className="input appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md  placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                value={clientInfoForm.fullname}
                 onChange={handleChange}
                 placeholder="Your Name"
               />
             </div>
             <div>
-              <label htmlFor="password" className="font-semibold text-gray-900">
+              <label htmlFor="phoneNumber" className="font-semibold text-gray-900">
                 Phone Number
               </label>
               <input
@@ -138,124 +93,95 @@ const ClientInfo = () => {
                 name="phoneNumber"
                 type="text"
                 required
-                className="input appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="input appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md  placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 value={clientInfoForm.phoneNumber}
                 onChange={handleChange}
+                placeholder="Your Phone Number"
               />
             </div>
             <div>
-              <label
-                htmlFor="delievryAdress"
-                className="font-semibold text-gray-900"
-              >
-                Delievry Adress
+              <label htmlFor="shippingAddress" className="font-semibold text-gray-900">
+                Delivery Address
               </label>
               <input
-                id="delievryAdress"
-                name="delievryAdress"
+                id="shippingAddress"
+                name="shippingAddress"
                 type="text"
                 required
-                className="input  block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                value={clientInfoForm.delievryAdress}
+                className="input  block w-full px-3 py-2 border border-gray-300 rounded-md  placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                value={clientInfoForm.shippingAddress}
                 onChange={handleChange}
+                placeholder="Your Delivery Address"
               />
             </div>
           </div>
           <div>
-            <label htmlFor="" className="text-lg text-gray-500">
-              Payement method{" "}
+            <label htmlFor="paymentMethod" className="text-lg text-gray-500">
+              Payment Method
             </label>
-            <div className="relative inline-block w-full text-gray-700">
-              <select
-                className="w-full h-10 pl-3 pr-6 text-base placeholder-gray-600 border rounded-lg appearance-none focus:shadow-outline mb-4"
-                value={paymentMethod}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-              >
-                <option value="visa">
-                  <div className="flex justify-around">
-                    <p>Visa</p>
-                    <img
-                      src="https://cdn4.iconfinder.com/data/icons/flat-brand-logo-2/512/visa-512.png"
-                      alt="visa"
-                      className="w-8 h-8"
-                    />
-                  </div>
-                </option>
-                <option value="paypal">PayPal</option>
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                <svg
-                  className="w-4 h-4 fill-current"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M7.05 11.293l2.5-2.5a.4.4 0 0 1 .586 0l2.5 2.5a.4.4 0 0 1-.293.683H7.343a.4.4 0 0 1-.293-.683z" />
-                </svg>
-              </div>
-            </div>
-            {paymentMethod === "visa" && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Full name
-                </label>
-                <input
-                  type="text"
-                  name="fullName"
-                  value={cardInfo.fullName}
-                  onChange={handleCardInfoChange}
-                  className="input"
-                />
-
-                <label className="block text-sm font-medium text-gray-700">
-                  Card number
-                </label>
-                <input
-                  type="text"
-                  name="cardNumber"
-                  value={cardInfo.cardNumber}
-                  onChange={handleCardInfoChange}
-                  className="input"
-                />
-                <label className="block text-sm font-medium text-gray-700">
-                  Expiry date
-                </label>
-                <input
-                  type="text"
-                  name="expiryDate"
-                  value={cardInfo.expiryDate}
-                  onChange={handleCardInfoChange}
-                  className="input"
-                />
-                <label className="block text-sm font-medium text-gray-700">
-                  CVV
-                </label>
-                <input
-                  type="text"
-                  name="cvv"
-                  value={cardInfo.cvv}
-                  onChange={handleCardInfoChange}
-                  className="input"
-                />
-              </div>
-            )}
-
-            {paymentMethod === "paypal" && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  PayPal email
-                </label>
-                <input
-                  type="email"
-                  name="paypalEmail"
-                  value={paypalEmail}
-                  onChange={handlePaypalEmailChange}
-                  className="input"
-                />
-              </div>
-            )}
+            <select
+              id="paymentMethod"
+              name="paymentMethod"
+              className="w-full mb-4 h-10 pl-3 pr-6 text-lg placeholder-gray-600 border-2 rounded-lg appearance-none focus:shadow-outline font-bold"
+              value={paymentMethod}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+            >
+              <option value="visa">Visa</option>
+              <option value="paypal">PayPal</option>
+              <option value="edahabia">Edahabia</option>
+              <option value="C.O.D">None (C.O.D)</option>
+            </select>
           </div>
 
-          <button type="submit" className="button ">
+          {["visa"].includes(paymentMethod) && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Card Number
+              </label>
+              <input
+                type="text"
+                name="creditCardNumber"
+                value={clientInfoForm.creditCardNumber}
+                onChange={handleChange}
+                className="input"
+                required
+              />
+            </div>
+          )}
+
+          {["edahabia"].includes(paymentMethod) && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Card Number
+              </label>
+              <input
+                type="text"
+                name="edahabiaNumber"
+                value={clientInfoForm.edahabiaNumber}
+                onChange={handleChange}
+                className="input"
+                required
+              />
+            </div>
+          )}
+          
+
+          {paymentMethod === "paypal" && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                PayPal Email
+              </label>
+              <input
+                type="email"
+                name="paypalEmail"
+                value={clientInfoForm.paypalEmail}
+                onChange={handleChange}
+                className="input"
+                required
+              />
+            </div>
+          )}
+          <button type="submit" className="button">
             Confirm
           </button>
         </form>

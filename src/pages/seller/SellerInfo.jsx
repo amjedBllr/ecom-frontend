@@ -17,7 +17,7 @@ const SellerInfo = () => {
     paypalActivity: false,
     edahabiaActivity: false,
     creditCardNumber: "",
-    paypalNumber: "",
+    paypalEmail: "",
     edahabiaNumber: "",
   });
 
@@ -99,12 +99,15 @@ const SellerInfo = () => {
 
     const updatedForm = { ...sellerInfoForm };
     if (paymentMethod === "visa") {
+      updatedForm.paypalEmail = ""
       updatedForm.creditCardNumber = cardInfo.cardNumber;
       updatedForm.creditCardActivity = true;
     } else if (paymentMethod === "edahabia") {
+      updatedForm.paypalEmail = ""
       updatedForm.edahabiaNumber = cardInfo.cardNumber;
       updatedForm.edahabiaActivity = true;
     } else if (paymentMethod === "paypal") {
+      updatedForm.paypalEmail = ""
       updatedForm.paypalActivity = true;
     }
 
@@ -130,7 +133,7 @@ const SellerInfo = () => {
 
   useEffect(() => {
     if (userRole === "client") navigate("/register/client");
-  }, [userRole, navigate]);
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-custom-background rounded bg-cover bg-no-repeat px-4 sm:px-10 lg:px-8 py-12">
@@ -266,7 +269,7 @@ const SellerInfo = () => {
                 <input
                   type="email"
                   name="paypalNumber"
-                  value={sellerInfoForm.paypalNumber}
+                  value={sellerInfoForm.paypalEmail}
                   onChange={handleChange}
                   className="input"
                   required
