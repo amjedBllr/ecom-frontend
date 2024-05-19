@@ -1,60 +1,88 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useContext } from "react";
+import App from '../../App.jsx'
+
+
 const SignUp = () => {
   const [signUpForm, setSignUpForm] = useState({
     email: "",
     password: "",
     confirmPassword: "",
-    userType: "",
+    role: "client",
     agreeTerms: false,
   });
-  const handleUserTypeChange = (type) => {
+
+  const handleroleChange = (type) => {
     setSignUpForm({
       ...signUpForm,
-      userType: type,
+      role: type,
     });
+    console.log(signUpForm);
   };
+
   const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
     setSignUpForm({
       ...signUpForm,
-      [e.target.name]: e.target.value,
+      [name]: type === "checkbox" ? checked : value,
     });
     console.log(signUpForm);
   };
 
   const navigate = useNavigate();
 
-  const handleSubmit = () => {
-    // event.preventDefault();
+  const [message, setMessage] = useState("");
 
-    // // Send the signUpForm data
-    // const response = await fetch("/api/signup", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(signUpForm),
-    // });
-
-    // if (!response.ok) {
-    //   // Handle error
-    //   console.error("Signup failed");
-    //   return;
-    // }
-
-    // After form is successfully submitted
-    if (signUpForm.userType === "client") {
-      navigate("/signup/clientInfo", { state: { formData: signUpForm } });
-    } else if (signUpForm.userType === "seller") {
-      navigate("/signup/sellerInfo", { state: { formData: signUpForm } });
-    }
-    // ...
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
+
+  
+  const {serverUrl , setChanged , userinfo} = useContext(App.context)
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validateEmail(signUpForm.email)) {
+      setMessage("Invalid email address!!");
+    } else if (signUpForm.password.length <= 0) {
+      setMessage("You must set a password!!");
+    } else if (signUpForm.password !== signUpForm.confirmPassword) {
+      setMessage("Passwords are unmatched!!");
+    } else if (!signUpForm.agreeTerms) {
+      setMessage("You have to agree to the terms and conditions");
+    } else {
+      try {
+        setMessage('')
+        const register = await axios.post(`${serverUrl}/api/v1/auth/register/user`,signUpForm)
+        if(register.status===201){
+          const login = await axios.post(
+            `${serverUrl}/api/v1/auth/login`,signUpForm,{withCredentials:true})
+            setChanged(true)
+
+            if (signUpForm.role === "client") {
+              navigate("/register/client");
+            } else if (signUpForm.role === "seller") {
+              navigate("/register/seller");
+            }
+            
+             } 
+      } catch (error) {
+        console.log(error)
+        setMessage(error.response.data.error)
+      }
+      
+    }
+  };
+
   return (
-    <div className=" py-12  min-h-screen flex items-center justify-center bg-custom-background rounded bg-cover bg-no-repeat px-4 sm:px-10 lg:px-8">
+    <div className="py-12 min-h-screen flex items-center justify-center bg-custom-background rounded bg-cover bg-no-repeat px-4 sm:px-10 lg:px-8">
       <div className="max-w-lg w-full py-10 px-16 rounded space-y-8 bg-white">
         <div>
-          <h2 className="text-center text-4xl font-extrabold text-gray-900 font-montserrat ">
+          <h2 className="text-center text-4xl font-extrabold text-gray-900 font-montserrat">
             REGISTER
           </h2>
         </div>
@@ -75,7 +103,7 @@ const SignUp = () => {
                 type="text"
                 required
                 className="input appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                value={signUpForm.emailOrPhone}
+                value={signUpForm.email}
                 onChange={handleChange}
               />
             </div>
@@ -88,7 +116,7 @@ const SignUp = () => {
                 name="password"
                 type="password"
                 required
-                min={8}
+                minLength={5}
                 className="input appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 value={signUpForm.password}
                 onChange={handleChange}
@@ -105,9 +133,9 @@ const SignUp = () => {
                 id="confirmPassword"
                 name="confirmPassword"
                 type="password"
-                min={8}
+                minLength={5}
                 required
-                className="input  block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="input block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 value={signUpForm.confirmPassword}
                 onChange={handleChange}
               />
@@ -119,25 +147,23 @@ const SignUp = () => {
               <div>
                 <button
                   type="button"
-                  className={`px-8 py-4 font-semibold font-montserrat mr-2 border-2 p
-                ${
-                  signUpForm.userType === "client"
-                    ? "border-[#607D8B] border-[3px]"
-                    : "border-gray-300"
-                }`}
-                  onClick={() => handleUserTypeChange("client")}
+                  className={`px-8 py-4 font-semibold font-montserrat mr-2 ${
+                    signUpForm.role === "client"
+                      ? "border-[#607D8B] border-[3px]"
+                      : "border-gray-300"
+                  }`}
+                  onClick={() => handleroleChange("client")}
                 >
                   Client
                 </button>
                 <button
                   type="button"
-                  className={`px-8 py-4 font-semibold font-montserrat mr-2  p
-                ${
-                  signUpForm.userType === "seller"
-                    ? "border-[#607D8B] border-[3px]"
-                    : "border-gray-300"
-                }`}
-                  onClick={() => handleUserTypeChange("seller")}
+                  className={`px-8 py-4 font-semibold font-montserrat mr-2 ${
+                    signUpForm.role === "seller"
+                      ? "border-[#607D8B] border-[3px]"
+                      : "border-gray-300"
+                  }`}
+                  onClick={() => handleroleChange("seller")}
                 >
                   Seller
                 </button>
@@ -150,7 +176,6 @@ const SignUp = () => {
                 type="checkbox"
                 required
                 className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                value={signUpForm.agreeTerms}
                 checked={signUpForm.agreeTerms}
                 onChange={handleChange}
               />
@@ -168,8 +193,8 @@ const SignUp = () => {
               </label>
             </div>
           </div>
-
-          <button onClick={handleSubmit} className="button">
+          <p className="text-red-500">{message}</p>
+          <button type="submit" className="button">
             Next
           </button>
         </form>

@@ -4,6 +4,7 @@ import { Routes, Route , useNavigate } from "react-router-dom";
 import axios from "axios";
 
 //?client imports
+import ClientProductPage from "./pages/client/clientProductPage.jsx";
 import ClientProfile from "./pages/client/ClientProfile";
 import ClientHome from "./pages/client/ClientHome.jsx";
 import ClientLayout from "./layouts/ClientLayout";
@@ -13,6 +14,7 @@ import Payment from "./pages/client/Payment.jsx";
 import CheckOut from "./pages/client/CheckOut.jsx";
 
 //?seller imports
+import SellerProductPage from "./pages/seller/sellerProductPage.jsx";
 import SellerLayout from "./layouts/SellerLayout";
 import SellerHome from "./pages/seller/SellerHome";
 import SellerStore from "./pages/seller/SellerStore";
@@ -22,11 +24,9 @@ import SellerInfo from "./pages/seller/SellerInfo";
 
 //?general imports
 import CategoryPage from "./pages/seller/CategoryPage.jsx";
-import ProductDetails from "./components/products/ProductDetails.jsx";
 import HomePage from "./pages/HomePage";
 import SignIn from "./pages/Auth/SignIn";
 import SignUp from "./pages/Auth/SignUp";
-import ProductPage from "./pages/ProductPage.jsx";
 import AboutUs from "./pages/AboutUs";
 import NotFoundPage from "./pages/NotFoundPage";
 import Loading from "./components/Loading.jsx";
@@ -103,7 +103,7 @@ function App() {
                               <Route path='profile' element={<ClientProfile/>}/>
                               <Route path="cart" element={<CheckOut />} />
                               <Route path="category/:categoryName" element={<CategoryPage />} />
-                              <Route path="product/:id" element={<ProductDetails />} />
+                              <Route path="product/:id" element={<ClientProductPage />} />
                               <Route path='payment/:id' element={<Payment />}/>
                               <Route path='*' element={<NotFoundPage/>}/>
                           </Route>
@@ -118,6 +118,7 @@ function App() {
                               <Route path='profile' element={<SellerProfile/>}/>
                               <Route path='about-us' element={<AboutUs/>}/>
                               <Route path='*' element={<NotFoundPage/>}/>
+                              <Route path="product/:id" element={<SellerProductPage/>} />
                           </Route>
                           <Route path='/seller/home' element={<SellerHome/>}>
                               <Route path='store' element={<SellerStore/>}/>

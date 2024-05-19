@@ -9,10 +9,12 @@ const ProductCard = (props) => {
   
   const navigate = useNavigate()
 
+  const {userRole} = useContext(App.context)
+
   const { _id , photos, productName, discrtiption, price } = props.product
   
   const handleClick = () => {
-    navigate(`/client/product/${_id||3000}`);
+    navigate(`/${userRole}/product/${_id||3000}`);
   };
 
 

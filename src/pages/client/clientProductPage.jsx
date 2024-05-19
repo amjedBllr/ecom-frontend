@@ -5,7 +5,7 @@ import { FaShoppingCart, FaStar, FaChevronDown } from "react-icons/fa";
 import ReactStarsRating from "react-rating-stars-component";
 import { useLocation } from "react-router-dom";
 
-// Start of rescoucres arrays
+// Start of resources arrays
 const productDetails = {
   imgUrl:
     "https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=1480&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -50,26 +50,17 @@ const relatedProducts = [
   {
     id: 3,
     name: "Puma Suede Classic",
-
-    price: "80$",
-    imgUrl: "https://images.unsplash.com/photo-1572635196237-14b3f281503f",
-  },
-  {
-    id: 3,
-    name: "Puma Suede Classic",
-
     price: "80$",
     imgUrl: "https://images.unsplash.com/photo-1572635196237-14b3f281503f",
   },
 ];
-// images
+// End of resources array
 
-// End of resoucres array
-const ProductPage = () => {
+const ClientProductPage = () => {
   const location = useLocation();
-  const product = location.state?.product || null;
-  console.log(product); // This will throw an error
-  // Start of varrs arrays
+  const product = location.state?.product || productDetails;
+
+  // Start of state variables
   const [quantity, setQuantity] = useState(1);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
@@ -92,8 +83,8 @@ const ProductPage = () => {
     // Add additional images if available
   ];
 
-  // End of varrs arrays
-  // handle functions
+  // End of state variables
+  // Handle functions
 
   const handleQuantityChange = (e) => {
     setQuantity(e.target.value);
@@ -170,8 +161,8 @@ const ProductPage = () => {
 
           {/* Product Details Section */}
           <div className="py-2">
-            <h1 className="text-3xl font-bold mb-4 py-4">{product.name}</h1>
-            <p className="text-gray-600 mb-4">{product.discrtiption}</p>
+            <h1 className="text-3xl font-bold mb-4 py-4">{product.productName}</h1>
+            <p className="text-gray-600 mb-4">{product.description}</p>
             <div className="flex items-center mb-4">
               <ReactStarsRating
                 count={5}
@@ -187,7 +178,7 @@ const ProductPage = () => {
               <span className="text-gray-600 ml-2">({rating.toFixed(1)})</span>
             </div>
             <p className="text-2xl font-bold text-gray-800 mb-4">
-              {productDetails.price}
+              {product.price}
             </p>
             <p className="text-gray-600 mb-4">
               Sold by:{" "}
@@ -287,7 +278,8 @@ const ProductPage = () => {
     </>
   );
 };
-export default ProductPage;
+export default ClientProductPage;
+
 const ReviewsSection = ({ reviews }) => {
   return (
     <div className="border-t border-gray-300 py-6 mt-4">
@@ -295,7 +287,6 @@ const ReviewsSection = ({ reviews }) => {
       {reviews.map((review) => (
         <div key={review.id} className="mb-4 pt-4">
           <p className="text-gray-700 ">{review.comment}</p>
-
           <div className="flex items-center mb-2">
             <ReactStarsRating
               count={5}
