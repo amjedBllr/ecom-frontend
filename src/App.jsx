@@ -94,6 +94,7 @@ function App() {
                   </Route>
 
                   {/* Authenticated paths */}
+                 
                   {userRole === 'client' && (
                       <>
                           {/* Client paths */}

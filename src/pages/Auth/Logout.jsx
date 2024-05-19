@@ -1,22 +1,32 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom'; // Use useNavigate hook
 import axios from 'axios';
+import App from '../../App.jsx'
+import { useContext } from 'react';
 
 const Logout = () => {
   const navigate = useNavigate(); // Call useNavigate hook to get navigation function
+  const {setChanged , userRole , isLoggedIn} = useContext(App.context)
 
   const handleLogout = async() => {
     try {
         const logout = await axios.get(`http://localhost:3000/api/v1/auth/logout`, { withCredentials: true });
+        setChanged(true)
         navigate('/sign-in');
         console.log('User logged out !')
     } catch (error) {
-        console.log(error)
+      console.log(error)
     }
   };
 
   const handleCancel = () => {
-    navigate('/sign-in'); // Use navigate function to redirect
+    if(isLoggedIn){
+      if(userRole === 'client') navigate('/client/home')
+        else if(userRole === 'seller') navigate('/seller/home/store')
+        else if(userRole === 'admin') navigate('/admin/home')
+    }
+  else  navigate('/sign-in')
+    
 };
 
 
