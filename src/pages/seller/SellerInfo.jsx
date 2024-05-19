@@ -51,14 +51,13 @@ const SellerInfo = () => {
     }));
   };
 
-  const [message,setMessage]=useState('')
+  const [message, setMessage] = useState("");
 
-
-  const { serverUrl, userRole} = useContext(App.context);
+  const { serverUrl, userRole } = useContext(App.context);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     if (!sellerInfoForm.sellerType) {
       setMessage("Seller Type is required.");
       return;
@@ -98,34 +97,36 @@ const SellerInfo = () => {
       return;
     }
 
-    if(paymentMethod==='visa'){
-      setSellerInfoForm(prev=>{
-        return({...prev,creditCardNumber:cardInfo.cardNumber,creditCardActivity:true})
-      })
-    }
-    else if(paymentMethod==='edahabia'){
-      setSellerInfoForm(prev=>{
-        return({...prev,edahabiaNumber:cardInfo.cardNumber,edahabiaActivity:true})
-      })
-    }
-    else if(paymentMethod==='edahabia'){
-      setSellerInfoForm(prev=>{
-        return({...prev,paypalActivity:true})
-      })
+    const updatedForm = { ...sellerInfoForm };
+    if (paymentMethod === "visa") {
+      updatedForm.creditCardNumber = cardInfo.cardNumber;
+      updatedForm.creditCardActivity = true;
+    } else if (paymentMethod === "edahabia") {
+      updatedForm.edahabiaNumber = cardInfo.cardNumber;
+      updatedForm.edahabiaActivity = true;
+    } else if (paymentMethod === "paypal") {
+      updatedForm.paypalActivity = true;
     }
 
     try {
+      const formData = new FormData();
+      Object.keys(updatedForm).forEach((key) => {
+        formData.append(key, updatedForm[key]);
+      });
+      formData.append("identityCard", sellerInfoForm.identityCard);
+
       const seller = await axios.post(
-        `${serverUrl}/api/v1/auth/register/seller`,sellerInfoForm,{withCredentials:true})
-        console.log(seller)
+        `${serverUrl}/api/v1/auth/register/seller`,
+        formData,
+        { withCredentials: true }
+      );
+      console.log(seller);
+      navigate('/seller/home/store')
     } catch (error) {
       setMessage("An error occurred while submitting the form. Please try again.");
-      console.log(error)
+      console.log(error);
     }
   };
-
-  
-  
 
   useEffect(() => {
     if (userRole === "client") navigate("/register/client");
@@ -147,22 +148,22 @@ const SellerInfo = () => {
                 <button
                   type="button"
                   className={`px-8 py-4 font-semibold font-montserrat mr-2 border-2 ${
-                    sellerInfoForm.sellerType === "Company"
+                    sellerInfoForm.sellerType === "company"
                       ? "border-[#607D8B] border-[3px]"
                       : "border-gray-300"
                   }`}
-                  onClick={() => handleSellerTypeChange("Company")}
+                  onClick={() => handleSellerTypeChange("company")}
                 >
                   Company
                 </button>
                 <button
                   type="button"
                   className={`px-8 py-4 font-semibold font-montserrat mr-2 border-2 ${
-                    sellerInfoForm.sellerType === "Individual"
+                    sellerInfoForm.sellerType === "individual"
                       ? "border-[#607D8B] border-[3px]"
                       : "border-gray-300"
                   }`}
-                  onClick={() => handleSellerTypeChange("Individual")}
+                  onClick={() => handleSellerTypeChange("individual")}
                 >
                   Individual
                 </button>
@@ -253,9 +254,9 @@ const SellerInfo = () => {
                   value={cardInfo.cardNumber}
                   onChange={handleCardInfoChange}
                   className="input"
+                  required
                 />
               </div>
-              
             )}
             {paymentMethod === "paypal" && (
               <div>
@@ -268,6 +269,7 @@ const SellerInfo = () => {
                   value={sellerInfoForm.paypalNumber}
                   onChange={handleChange}
                   className="input"
+                  required
                 />
               </div>
             )}
@@ -307,10 +309,10 @@ const SellerInfo = () => {
               </div>
             </div>
           </div>
-          <br/>
-            <p className="text-red-500 ml-2">{message}</p>
-          <br/>
-          <button type="submit" className="button" onClick={handleSubmit}>
+          <br />
+          <p className="text-red-500 ml-2">{message}</p>
+          <br />
+          <button type="submit" className="button">
             Confirm
           </button>
         </form>
