@@ -53,13 +53,79 @@ const SellerInfo = () => {
 
   const [message,setMessage]=useState('')
 
+
+  const { serverUrl, userRole} = useContext(App.context);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+  
+    if (!sellerInfoForm.sellerType) {
+      setMessage("Seller Type is required.");
+      return;
+    }
+    if (!sellerInfoForm.businessName) {
+      setMessage("Business Name is required.");
+      return;
+    }
+    if (!sellerInfoForm.businessPhone) {
+      setMessage("Business Phone Number is required.");
+      return;
+    }
+    if (!sellerInfoForm.businessEmail) {
+      setMessage("Business Email is required.");
+      return;
+    }
+    if (!sellerInfoForm.businessAddress) {
+      setMessage("Business Address is required.");
+      return;
+    }
+    if (!sellerInfoForm.commerceRegisterNumber) {
+      setMessage("Commerce Register Number is required.");
+      return;
+    }
+    if (!sellerInfoForm.identityCard) {
+      setMessage("Identity Card is required.");
+      return;
     }
 
+    if (["visa", "edahabia"].includes(paymentMethod) && !cardInfo.cardNumber) {
+      setMessage("Card Number is required.");
+      return;
+    }
 
-  const { serverUrl, userRole, userinfo } = useContext(App.context);
+    if (paymentMethod === "paypal" && !sellerInfoForm.paypalNumber) {
+      setMessage("PayPal Email is required.");
+      return;
+    }
+
+    if(paymentMethod==='visa'){
+      setSellerInfoForm(prev=>{
+        return({...prev,creditCardNumber:cardInfo.cardNumber,creditCardActivity:true})
+      })
+    }
+    else if(paymentMethod==='edahabia'){
+      setSellerInfoForm(prev=>{
+        return({...prev,edahabiaNumber:cardInfo.cardNumber,edahabiaActivity:true})
+      })
+    }
+    else if(paymentMethod==='edahabia'){
+      setSellerInfoForm(prev=>{
+        return({...prev,paypalActivity:true})
+      })
+    }
+
+    try {
+      const seller = await axios.post(
+        `${serverUrl}/api/v1/auth/register/seller`,sellerInfoForm,{withCredentials:true})
+        console.log(seller)
+    } catch (error) {
+      setMessage("An error occurred while submitting the form. Please try again.");
+      console.log(error)
+    }
+  };
+
+  
+  
 
   useEffect(() => {
     if (userRole === "client") navigate("/register/client");
