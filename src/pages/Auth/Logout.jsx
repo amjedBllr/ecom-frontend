@@ -12,8 +12,7 @@ const Logout = () => {
     try {
         const logout = await axios.get(`http://localhost:3000/api/v1/auth/logout`, { withCredentials: true });
         setChanged(true)
-        navigate('/sign-in');
-        console.log('User logged out !')
+        navigate('/');
     } catch (error) {
       console.log(error)
     }

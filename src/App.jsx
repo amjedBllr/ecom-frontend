@@ -31,6 +31,8 @@ import AboutUs from "./pages/AboutUs";
 import NotFoundPage from "./pages/NotFoundPage";
 import Loading from "./components/Loading.jsx";
 import Logout from "./pages/Auth/Logout.jsx";
+import Header from "./components/Header.jsx";
+import Footer from "./components/Footer.jsx";
 
 const context = createContext();
 
@@ -90,6 +92,7 @@ function App() {
                       <Route path='register' element={<SignUp/>}/>
                       <Route path='register/client' element={<ClientInfo/>}/>
                       <Route path='register/seller' element={<SellerInfo/>}/>
+                      <Route path='about' element={<><Header/><AboutUs/><Footer/></>}/>
                       <Route path='logout' element={<Logout/>}/>
                   </Route>
 

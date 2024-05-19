@@ -1,11 +1,11 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom';
-import Header from "../components/Header.jsx";
+import ClientNav from '../components/ClientNav';
 import Footer from "../components/Footer";
 function ClientLayout() {
   return (
     <>
-        <Header/>
+        <ClientNav/>
         <Outlet/>
         <Footer/>
     </>

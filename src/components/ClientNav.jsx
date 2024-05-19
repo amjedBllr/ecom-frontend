@@ -1,28 +1,28 @@
 import CategoryList from "./Header/HeaderLinks";
 import { Link } from "react-router-dom";
 
-const Header = () => {
+const ClientNav = () => {
   return (
     <header id="client-nav">
       <nav>
         <ul className="right">
           <li>
-            <Link to="/sign-in">help</Link>
+            <Link to="/client/help">help</Link>
           </li>
           <li>
-            <Link to="/about">About</Link>
+            <Link to="/client/about-us">About</Link>
           </li>
           <li>
-            <Link to="/sign-in">Comparator</Link>
+            <Link to="/client/comparator">Comparator</Link>
           </li>
         </ul>
-        <Link to='/sign-in' className="logo">
+        <Link to='/client/home' className="logo">
           SouqKantra
         </Link>
         <ul className="left">
-        <li><Link to="/sign-in"><img src="../../public/icons/img_rewind.svg"/></Link></li>
-          <li><Link to="/sign-in"><img src="../../public/icons/bag.svg"/></Link></li>
-          <li><Link to="/sign-in"><img src="../../public/icons/img_lock.svg"/></Link></li>
+        <li><Link to="/client/search"><img src="../../public/icons/img_rewind.svg"/></Link></li>
+          <li><Link to="/client/cart"><img src="../../public/icons/bag.svg"/></Link></li>
+          <li><Link to="/client/profile"><img src="../../public/icons/img_lock.svg"/></Link></li>
         </ul>
       </nav>
       <CategoryList />
@@ -33,4 +33,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default ClientNav;
