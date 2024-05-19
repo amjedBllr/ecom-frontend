@@ -289,7 +289,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 32%;
+    width: 34%;
     margin-left: 5%;
     padding: 2%;
     margin-bottom: 5%;
@@ -937,3 +937,10 @@
     background-color: #f2f2f2;
   }
   
+  /*! slider images*/
+
+.slider-image img{
+    width: 100%;
+    height: 520px;
+    object-fit: cover;
+}

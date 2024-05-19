@@ -1,9 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-const ProductCard = ({id , imgUrl, sellerName, name, discrtiption, price }) => {
-  const product = { imgUrl, sellerName, name, discrtiption, price };
+const ProductCard = (props) => {
+  const { imgUrl, sellerName, productName, discription, price } = props.product ;
   const navigate = useNavigate();
-
+  let id
   const handleClick = () => {
     navigate(`/client/product/${id}`);
   };
@@ -13,8 +13,8 @@ const ProductCard = ({id , imgUrl, sellerName, name, discrtiption, price }) => {
       <div className="content">
         <div className="left">
           <h3>{sellerName}</h3>
-          <h4>{name}</h4>
-          <p>{discrtiption}</p>
+          <h4>{productName}</h4>
+          <p>{discription}</p>
         </div>
         <div className="right">
           <p>{price}</p>

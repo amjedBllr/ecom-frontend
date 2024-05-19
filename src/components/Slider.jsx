@@ -42,14 +42,14 @@ const ImageSlider = () => {
 
   return (
     <Slider {...settings}>
-      <div>
-        <img src="../../public/images/slider.png" alt="Image 1" />
+      <div className="slider-image">
+        <img src="../../public/images/slider4.jpg" alt="Image 2" />
       </div>
-      <div>
-        <img src="../../public/images/slider.png" alt="Image 2" />
+      <div className="slider-image">
+        <img src="../../public/images/slider6.webp" alt="Image 1" />
       </div>
-      <div>
-        <img src="../../public/images/slider.png" alt="Image 3" />
+      <div className="slider-image">
+        <img src="../../public/images/slider5.jpg" alt="Image 3" />
       </div>
     </Slider>
   );

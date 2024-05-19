@@ -11,14 +11,11 @@ const Expensive = () => {
               </div>
               <div className="flex gap-2 flex-1 my-4">
                 {data1.slice(0, 4).map((product, index) => (
-                    <ProductCard 
-                        key={index}
-                        imgUrl={product.imgUrl}
-                        sellerName={product.sellerName}
-                        name={product.productName}
-                        discrtiption={product.discrtiption}
-                        price={product.price}
-                    />
+                    <ProductCard
+                    key={index}
+                    product = {product}
+                    className="bg-white text-text"
+                  />
                 ))}
             </div>
             </section>

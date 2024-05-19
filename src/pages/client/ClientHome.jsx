@@ -8,7 +8,7 @@ const ClientHome = () => {
     <div className="bg-[#F0F0F0] bg-cover overflow-x-hidden max-w-screen">
       <ImageSlider />
       <BestSells />
-      <Promotion />
+      <Promotion /> 
       <Categorie />
       <Expensive />
     </div>

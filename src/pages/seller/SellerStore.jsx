@@ -55,10 +55,10 @@ const SellerStore = () => {
                 <div className="seller-card">
                     <img src={userinfo.user_info.pfp||'/images/pfp_placeholder.jpg'} />
                     <div>
-                        <h4 className="name">{seller.businessName} <span>{seller.sellerStatus}</span></h4>
-                        <p className="type">{seller.sellerType}</p>
+                        <h4 className="name">{seller.businessName||"proccessing..."} <span>{seller.sellerStatus||"proccessing..."}</span></h4>
+                        <p className="type">{seller.sellerType||"proccessing..."}</p>
                         <p className="rating">Rating: 10/10 <span className='type'>(0 person)</span></p>
-                        <p className="email">{seller.businessEmail}</p>
+                        <p className="email">{seller.businessEmail||"proccessing..."} ~ {seller.businessPhone||"proccessing..."} </p>
                     </div>
                 </div>
             </section>
