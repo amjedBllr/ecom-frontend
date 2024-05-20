@@ -123,7 +123,7 @@ const SearchPage = () => {
   const [selectedType, setSelectedType] = useState("false");
   const [page,setPage] = useState(1)
   const [products,setProducts] = useState([])
-
+  const [message , setMessage] = useState("")
   const handleOptionClick = () => {
     setShowOptions((prevShowOptions) => !prevShowOptions);
   };
@@ -149,21 +149,32 @@ const SearchPage = () => {
     categories.find((category) => category.name === selectedCategory)
       ?.miniCategories || [];
 
-  const {serverUrl} = App.context
+  const {serverUrl} = useContext(App.context)
   
   const handleSearch = async () => {
     let query = `?name=${selectedName}`;
-    
+  
     if (selectedType === "true") {
       query += `&discount=true`;
     }
-    
+  
     query += `&category=${selectedCategory}`;
     query += `&type=${selectedMiniCategory}`;
-    
-    console.log(`${serverUrl}/api/v1/products${query}`);
+    query += `&page=${page}`;
+  
+    try {
+      const prods = await axios.get(`${serverUrl}/api/v1/products${query}`);
+      setProducts(prods.data.data);
+      setMessage("")
+    } catch (error) {
+      console.error(error);
+      setMessage(error.response.data.message)
+    }
   };
   
+  useEffect(()=>{
+    handleSearch()
+  },[page])
     
 
   return (
@@ -284,9 +295,35 @@ const SearchPage = () => {
     </header>
       <h1 className="text-3xl font-bold padding-x my-8">Search Results</h1>
       <div className="grid grid-cols-5  gap-x-8 gap-y-8 padding-x sm:flex sm:flex-col my-12">
+      {products.map((product, index) => (
+          <ProductCard
+            key={index}
+            product = {product}
+            className="bg-white text-text"
+          />
+        ))}
+      </div>
+      <div className="h-full flex justify-center">
+        <p className="text-red-500">{message}</p>
+      </div>
+      <div className="h-full flex justify-center gap-10">
+      <button
+          onClick={() => {
+            setPage((prev) => prev - 1)
+            
+          }}
+          className="px-4 py-2 bg-blue-500 text-white rounded"
+        >prev page</button>
+      <button
+          onClick={() => {
+            setPage((prev) => prev + 1)
+            
+          }}
+          className="px-4 py-2 bg-blue-500 text-white rounded"
+        >next page</button>
         
       </div>
-
+      
       <Footer />
     </div>
   );
