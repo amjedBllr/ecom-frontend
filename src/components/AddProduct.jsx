@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { useContext } from "react";
+
+import React, { useState, useMemo, useContext } from 'react';
 import App from '../App';
 import axios from 'axios';
 
@@ -107,7 +107,7 @@ function AddProduct(props) {
   ], []);
 
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
-  const [selectedcategoryType, setSelectedcategoryType] = useState(categories[0].miniCategories[0]);
+  const [selectedCategoryType, setSelectedCategoryType] = useState(categories[0].miniCategories[0]);
   const [newProduct, setNewProduct] = useState({
     productName: "",
     description: "",
@@ -120,6 +120,7 @@ function AddProduct(props) {
     category: categories[0].name,
     categoryType: categories[0].miniCategories[0].label,
   });
+  const [loading, setLoading] = useState(false); // Loading state
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -132,7 +133,7 @@ function AddProduct(props) {
   const handleCategoryChange = (e) => {
     const category = categories.find(category => category.name === e.target.value);
     setSelectedCategory(category);
-    setSelectedcategoryType(category.miniCategories[0]);
+    setSelectedCategoryType(category.miniCategories[0]);
     setNewProduct((prevProduct) => ({
       ...prevProduct,
       category: category.name,
@@ -140,9 +141,9 @@ function AddProduct(props) {
     }));
   };
 
-  const handlecategoryTypeChange = (e) => {
+  const handleCategoryTypeChange = (e) => {
     const categoryType = selectedCategory.miniCategories.find(categoryType => categoryType.label === e.target.value);
-    setSelectedcategoryType(categoryType);
+    setSelectedCategoryType(categoryType);
     setNewProduct((prevProduct) => ({
       ...prevProduct,
       categoryType: categoryType.label,
@@ -160,6 +161,7 @@ function AddProduct(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Set loading to true when form is submitted
     try {
       const formData = new FormData();
       Object.entries(newProduct).forEach(([key, value]) => {
@@ -167,11 +169,13 @@ function AddProduct(props) {
       });
       await axios.post(`${serverUrl}/api/v1/products`, formData, { withCredentials: true });
       console.log('Product added!');
-      window.alert("Product added successfuly !!");
+      window.alert("Product added successfully!!");
       props.closeModal();
     } catch (error) {
       console.log(error);
       window.alert("Failed to add product!!");
+    } finally {
+      setLoading(false); // Set loading to false when request is complete
     }
   };
 
@@ -179,130 +183,138 @@ function AddProduct(props) {
     <div className="fixed inset-0 z-50 overflow-auto bg-smoke-dark flex items-center justify-center bg-slate-600 bg-opacity-20 py-4">
       <div className="relative p-6 bg-white w-full max-w-md m-auto flex-col flex">
         <span
-          className="absolute top-0 right-0 cursor-pointer p-4 hover:bg-red-500 hover:text-white inline-blockrounded "
+          className="absolute top-0 right-0 cursor-pointer p-4 hover:bg-red-500 hover:text-white inline-block rounded"
           onClick={props.closeModal}
         >
           X
         </span>
-        <form onSubmit={handleSubmit} className="w-full py-4">
-          <label className="block mb-4">
-            <span className="text-gray-700">Product Name:</span>
+        {loading ? (
+          <div className="flex justify-center items-center">
+            <div className="loader">Loading...</div>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="w-full py-4">
+            <label className="block mb-4">
+              <span className="text-gray-700">Product Name:</span>
+              <input
+                type="text"
+                required
+                name="productName"
+                value={newProduct.productName}
+                onChange={handleInputChange}
+                className="mt-3 block w-full rounded-md border-gray-300 border-[0.2px] p-2"
+              />
+            </label>
+            <label className="block mb-4">
+              <span className="text-gray-700">Description:</span>
+              <textarea
+                name="description"
+                required
+                value={newProduct.description}
+                onChange={handleInputChange}
+                className="mt-1 block w-full rounded-md outline-none border-gray-300 shadow-sm p-2"
+              />
+            </label>
+            <label className="block mb-4">
+              <span className="text-gray-700">Price:</span>
+              <input
+                type="number"
+                required
+                name="price"
+                value={newProduct.price}
+                onChange={handleInputChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
+              />
+            </label>
+            <br />
+            <p className='text-blue-500'>Separate multiple values with ; symbol<br />ex: 'Black ; Red ; White'</p>
+            <br />
+            <label className="block mb-4">
+              <span className="text-gray-700">Colors:</span>
+              <input
+                type="text"
+                name="colors"
+                value={newProduct.colors}
+                onChange={handleInputChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
+              />
+            </label>
+            <label className="block mb-4">
+              <span className="text-gray-700">Sizes:</span>
+              <input
+                type="text"
+                name="sizes"
+                value={newProduct.sizes}
+                onChange={handleInputChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
+              />
+            </label>
+            <label className="block mb-4">
+              <span className="text-gray-700">Dimensions:</span>
+              <input
+                type="text"
+                name="dimensions"
+                value={newProduct.dimensions}
+                onChange={handleInputChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
+              />
+            </label>
+            <label className="block mb-4">
+              <span className="text-gray-700">Quantity Available:</span>
+              <input
+                type="number"
+                name="quantityAvailable"
+                value={newProduct.quantityAvailable}
+                onChange={handleInputChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
+              />
+            </label>
+            <label className="block mb-4">
+              <span className="text-gray-700">Photos:</span>
+              <input
+                type="file"
+                name="photos"
+                onChange={handleFileChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
+              />
+            </label>
+            <label className="block mb-4">
+              <span className="text-gray-700">Category:</span>
+              <select
+                name="category"
+                value={newProduct.category}
+                onChange={handleCategoryChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
+              >
+                {categories.map((category) => (
+                  <option key={category.name} value={category.name}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="block mb-4">
+              <span className="text-gray-700">Mini Category:</span>
+              <select
+                name="categoryType"
+                value={newProduct.categoryType}
+                onChange={handleCategoryTypeChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
+              >
+                {selectedCategory.miniCategories.map((categoryType) => (
+                  <option key={categoryType.label} value={categoryType.label}>
+                    {categoryType.label}
+                  </option>
+                ))}
+              </select>
+            </label>
             <input
-              type="text"
-              name="productName"
-              value={newProduct.productName}
-              onChange={handleInputChange}
-              className="mt-3 block w-full rounded-md border-gray-300 border-[0.2px] p-2"
+              type="submit"
+              value="Add Product"
+              className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             />
-          </label>
-          <label className="block mb-4">
-            <span className="text-gray-700">Description:</span>
-            <textarea
-              name="description"
-              value={newProduct.description}
-              onChange={handleInputChange}
-              className="mt-1 block w-full rounded-md outline-none border-gray-300 shadow-sm p-2"
-            />
-          </label>
-          <label className="block mb-4">
-            <span className="text-gray-700">Price:</span>
-            <input
-              type="number"
-              name="price"
-              value={newProduct.price}
-              onChange={handleInputChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
-            />
-          </label>
-          <br/>
-          <p className='text-blue-500'>Separate multiple values with ; symbol<br />ex: 'Black ; Red ; White'</p>
-          <br/>
-          <label className="block mb-4">
-            <span className="text-gray-700">Colors:</span>
-            <input
-              type="text"
-              name="colors"
-              value={newProduct.colors}
-              onChange={handleInputChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
-            />
-          </label>
-          <label className="block mb-4">
-            <span className="text-gray-700">Sizes:</span>
-            <input
-              type="text"
-              name="sizes"
-              value={newProduct.sizes}
-              onChange={handleInputChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
-            />
-          </label>
-          <label className="block mb-4">
-            <span className="text-gray-700">Dimensions:</span>
-            <input
-              type="text"
-              name="dimensions"
-              value={newProduct.dimensions}
-              onChange={handleInputChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
-            />
-          </label>
-          <label className="block mb-4">
-            <span className="text-gray-700">Quantity Available:</span>
-            <input
-              type="number"
-              name="quantityAvailable"
-              value={newProduct.quantityAvailable}
-              onChange={handleInputChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
-            />
-          </label>
-          <label className="block mb-4">
-            <span className="text-gray-700">Photos:</span>
-            <input
-              type="file"
-              name="photos"
-              onChange={handleFileChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
-            />
-          </label>
-          <label className="block mb-4">
-            <span className="text-gray-700">Category:</span>
-            <select
-              name="category"
-              value={newProduct.category}
-              onChange={handleCategoryChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
-            >
-              {categories.map((category) => (
-                <option key={category.name} value={category.name}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="block mb-4">
-            <span className="text-gray-700">Mini Category:</span>
-            <select
-              name="categoryType"
-              value={newProduct.categoryType}
-              onChange={handlecategoryTypeChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
-            >
-              {selectedCategory.miniCategories.map((categoryType) => (
-                <option key={categoryType.label} value={categoryType.label}>
-                  {categoryType.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          
-          <input
-            type="submit"
-            value="Add Product"
-            className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          />
-        </form>
+          </form>
+        )}
       </div>
     </div>
   );

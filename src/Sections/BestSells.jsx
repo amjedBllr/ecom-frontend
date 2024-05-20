@@ -1,7 +1,30 @@
 import ProductCard from "../components/ProductCard";
 import { data } from "../constantes/index";
+import axios from 'axios';
+import { useEffect , useContext , useState} from 'react';
+import App from '../App.jsx'
+
 
 const BestSells = () => {
+
+  
+  const [products , setProducts] = useState([])
+  const {serverUrl} = useContext(App.context)
+
+  useEffect(()=>{
+    async function fetchData() {
+      try {
+          const products = await axios.get(`${serverUrl}/api/v1/products?minPrice=5000&maxPrice=10000&limit=5`);
+          setProducts(products.data.data)
+          console.log(products.data.data)
+      } catch (error) {
+          console.log(error);
+      }
+  }
+  fetchData();
+  },[])
+
+
   return (
     <section className="bg-background padding-x py-4 my-6">
       <div className="flex justify-between items-center">
@@ -18,7 +41,7 @@ const BestSells = () => {
       </div>
 
       <div className="flex gap-2 flex-1 my-4 flexs">
-        {data.slice(0, 4).map((product, index) => (
+        {products.map((product, index) => (
           <ProductCard
             key={index}
             product = {product}

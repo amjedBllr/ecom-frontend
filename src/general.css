@@ -352,8 +352,11 @@
     width: 100%;
     padding: 4% 2%;
     display: grid;
-    grid-template-columns: repeat(5 , 1fr);
+    grid-template-columns: repeat(4 , 1fr);
+    row-gap: 2rem;
     place-content: center;
+    justify-content: center;
+    align-content: center;
 }
 
 
@@ -943,4 +946,13 @@
     width: 100%;
     height: 520px;
     object-fit: cover;
+}
+
+.product-page-image{
+    width: 510px;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    object-position: center;
+    margin-bottom: 4rem;
+    border: 3px black solid;
 }

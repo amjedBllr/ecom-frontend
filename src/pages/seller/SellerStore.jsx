@@ -13,7 +13,7 @@ const SellerStore = () => {
     const [products , setProducts] = useState([])
     const [seller , setSeller] = useState({})
 
-    const {userinfo} = useContext(App.context)
+    const {serverUrl,userinfo} = useContext(App.context)
 
     const openModal = () => {
         setIsModalOpen(true);
@@ -27,7 +27,7 @@ const SellerStore = () => {
         async function fetchData() {
             try {
                 setSeller(userinfo.seller_info)
-                const products = await axios.get(`http://localhost:3000/api/v1/sellers/${userinfo.seller_info._id}/products`, { withCredentials: true });
+                const products = await axios.get(`${serverUrl}/api/v1/sellers/${userinfo.seller_info._id}/products`, { withCredentials: true });
                 setProducts(products.data.data)
                 console.log(products.data.data)
             } catch (error) {

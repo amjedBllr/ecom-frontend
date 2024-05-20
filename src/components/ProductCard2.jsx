@@ -11,7 +11,7 @@ const ProductCard = (props) => {
 
   const {userRole} = useContext(App.context)
 
-  const { _id , photos, productName, discrtiption, price } = props.product
+  const { _id , photos, productName, description, price } = props.product
   
   const handleClick = () => {
     navigate(`/${userRole}/product/${_id||3000}`);
@@ -19,13 +19,13 @@ const ProductCard = (props) => {
 
 
   return (
-    <div id="product-card" onClick={handleClick}>
+    <div id="product-card" onClick={handleClick} >
       <img src={photos[0]} alt={name} />
       <div className="content">
         <div className="left">
           <h3>{props.seller.businessName}</h3>
           <h4>{productName}</h4>
-          <p>{discrtiption}</p>
+          <p>{description}</p>
         </div>
         <div className="right">
           <p>{price} DA</p>
