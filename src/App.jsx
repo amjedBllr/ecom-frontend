@@ -21,6 +21,18 @@ import SellerStore from "./pages/seller/SellerStore";
 import SellerOrders from "./pages/seller/SellerOrders";
 import SellerProfile from "./pages/seller/SellerProfile";
 import SellerInfo from "./pages/seller/SellerInfo";
+import SellerEditProduct from "./pages/seller/SellerEditProduct.jsx";
+
+//?admin imports 
+import AdminLayout from "./layouts/AdminLayout.jsx";
+import AdmineHome from "./pages/admin/AdminHome.jsx";
+import UserMangement from "./pages/admin/UserMangement.jsx";
+import AdminQA from "./pages/admin/AdminQA.jsx";
+import ReportTreatment from "./pages/admin/ReportTreatment.jsx";
+import ProductsManagement from "./pages/admin/ProductsManagement.jsx";
+import AdminProfile from "./pages/admin/AdminProfile.jsx";
+
+
 
 //?general imports
 import CategoryPage from "./pages/seller/CategoryPage.jsx";
@@ -33,6 +45,11 @@ import Loading from "./components/Loading.jsx";
 import Logout from "./pages/Auth/Logout.jsx";
 import Header from "./components/Header.jsx";
 import Footer from "./components/Footer.jsx";
+
+
+
+
+
 
 const context = createContext();
 
@@ -122,7 +139,7 @@ function App() {
                               <Route path='profile' element={<SellerProfile/>}/>
                               <Route path='about-us' element={<AboutUs/>}/>
                               <Route path='*' element={<NotFoundPage/>}/>
-                              <Route path="product/:id" element={<SellerProductPage/>} />
+                              <Route path="product/:id" element={<SellerEditProduct/>} />
                           </Route>
                           <Route path='/seller/home' element={<SellerHome/>}>
                               <Route path='store' element={<SellerStore/>}/>
@@ -134,13 +151,16 @@ function App() {
 
                   {userRole === 'admin' && (
                       <>
-                          {/* Admin paths */}
-                          <Route path='/admin'>
-                              <Route path='sign-in' element={""}/>
-                              <Route path='register' element={""}/>
-                              <Route path='register/client' element={""}/>
-                              <Route path='register/seller' element={""}/>
-                          </Route>
+                        <Route path="/admin" element={<AdminLayout />}>
+                            <Route path="home" element={<AdmineHome />} />
+                            <Route path="users" element={<UserMangement />} />
+                            <Route path="help" element={<AdminQA />} />
+                            <Route path="about" element={<AboutUs />} />
+                            <Route path="reports" element={<ReportTreatment />} />
+                            <Route path="profile" element={<AdminProfile />} />
+                            <Route path="product-managemnt" element={<ProductsManagement />} />
+                            <Route path="*" element={<NotFoundPage dest="/admin/home" />} />
+                        </Route>
                       </>
                   )}
 
