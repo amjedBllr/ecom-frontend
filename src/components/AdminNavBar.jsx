@@ -12,8 +12,8 @@ const AdminNavBar = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="pl-44 bg-slate-200" id="seller-first-nav">
+    <div className="flex flex-col min-h-screen z-12">
+      <header className="pl-20 " id="seller-first-nav">
         <nav>
           <ul className="right">
             <li>
@@ -24,7 +24,7 @@ const AdminNavBar = () => {
             </li>
           </ul>
           <Link to="/admin/home" className="logo">
-            ElMarchi
+            souqKantra
           </Link>
           <ul className="flex items-center gap-8">
             <li>
