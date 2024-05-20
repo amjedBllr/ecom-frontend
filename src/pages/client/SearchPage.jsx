@@ -8,7 +8,7 @@ import React from "react";
 import optionIcon from "../../../public/icons/options.png";
 
 import axios from 'axios';
-import { useEffect , useContext , useState} from 'react';
+import { useEffect , useContext , useState , useRef} from 'react';
 import App from "../../App";
 
 const categories = [
@@ -150,7 +150,8 @@ const SearchPage = () => {
       ?.miniCategories || [];
 
   const {serverUrl} = useContext(App.context)
-  
+  const resultsRef = useRef(null);
+
   const handleSearch = async () => {
     let query = `?name=${selectedName}`;
   
@@ -168,12 +169,16 @@ const SearchPage = () => {
       setMessage("")
     } catch (error) {
       console.error(error);
+      setProducts([])
       setMessage(error.response.data.message)
     }
   };
   
   useEffect(()=>{
     handleSearch()
+    if (resultsRef.current) {
+      resultsRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   },[page])
     
 
@@ -194,20 +199,26 @@ const SearchPage = () => {
         placeholder="Search"
         value={selectedName}
         onChange={handleNameChange}
-        className="w-40 h-full border-none text-xl outline-none font-semibold text-gray-700"
+        className="w-40 h-full border-none text-xl outline-none font-medium text-gray-700"
         aria-label="Search input"
       />
       <div className="flex items-center relative">
         <div className="px-3 border-r border-gray-300">
-          <button onClick={handleSearch}>
-            <svg
-              viewBox="0 0 512 512"
-              className="w-3 h-3 text-gray-700"
-              aria-hidden="true"
-            >
-              <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"></path>
-            </svg>
-          </button>
+        <button 
+  onClick={_ => {
+    setPage(1);
+    handleSearch();
+  }}
+  className="px-4 py-2 bg-blue-500 text-white rounded"
+>
+  <svg
+    viewBox="0 0 512 512"
+    className="w-3 h-3 text-gray-700"
+    aria-hidden="true"
+  >
+    <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"></path>
+  </svg>
+</button>
           
         </div>
         <button
@@ -293,7 +304,7 @@ const SearchPage = () => {
         <p>free shipping on all orders over 10000DA</p>
       </div>
     </header>
-      <h1 className="text-3xl font-bold padding-x my-8">Search Results</h1>
+      <h1 ref={resultsRef} className="text-3xl font-bold padding-x my-8">Search Results</h1>
       <div className="grid grid-cols-5  gap-x-8 gap-y-8 padding-x sm:flex sm:flex-col my-12">
       {products.map((product, index) => (
           <ProductCard
@@ -305,15 +316,19 @@ const SearchPage = () => {
       </div>
       <div className="h-full flex justify-center">
         <p className="text-red-500">{message}</p>
+        
       </div>
-      <div className="h-full flex justify-center gap-10">
+      <br/> 
+      <br/> 
+      <div className="h-full flex justify-center items-center gap-10">
       <button
           onClick={() => {
-            setPage((prev) => prev - 1)
+            setPage((prev) => Math.max(prev - 1, 1))
             
           }}
           className="px-4 py-2 bg-blue-500 text-white rounded"
         >prev page</button>
+        <p className="font-semibold">{page}</p>
       <button
           onClick={() => {
             setPage((prev) => prev + 1)
