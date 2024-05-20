@@ -18,11 +18,13 @@ const ClientProductPage = () => {
   
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
+  const [message , setMessage] = useState("")
 
   const [product , setProduct] = useState({})
   const [seller , setSeller ] = useState({})
   const [reviews , setReviews] = useState([])
   const [rate , setRate] = useState(0)
+
 
   const handleQuantityChange = (e) => {
     setQuantity(e.target.value);
@@ -56,7 +58,10 @@ const ClientProductPage = () => {
       comment: comment,
       reviewDate: reviewDateTime,
     }
-
+    if(comment===""){
+      setMessage("you have not write any comment !!")
+      return ;
+    }
     try {
       const rev = await axios.post(`${serverUrl}/api/v1/reviews`,review, { withCredentials: true });
       console.log(rev)
@@ -155,6 +160,9 @@ const ClientProductPage = () => {
                 rows={3}
                 className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+              <br/>
+              <p className="text-red-500">{message}</p>
+              <br/>
               <button
                 type="submit"
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2"
