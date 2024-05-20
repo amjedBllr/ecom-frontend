@@ -1,9 +1,21 @@
-import { useState } from "react";
-import { LiaEthereum } from "react-icons/lia";
+
+import axios from 'axios';
+import { useEffect , useContext , useState} from 'react';
+import App from '../App.jsx'
+
 const ClientOrder = (props) => {
   let [confirmed, setConfirmed] = useState(props.confirmed);
   const [showButtons, setShowButtons] = useState(false);
-
+  
+  const {
+    productId,
+    quantity,
+    size,
+    color,
+    dimension,
+    totalPrice
+  } = props.item ;
+  
   const handleShowButtons = () => {
     if (!confirmed) {
       setShowButtons(!showButtons);
@@ -20,6 +32,23 @@ const ClientOrder = (props) => {
   const handleDeleteItem = () => {
     // Delete item logic here
   };
+  
+  const [product , setProduct] = useState([])
+  const {serverUrl} = useContext(App.context)
+
+  useEffect(()=>{
+    async function fetchData() {
+      try {
+          const prod = await axios.get(`${serverUrl}/api/v1/products/${productId}`);
+          setProduct(prod.data.data)
+          console.log(prod.data.data)
+      } catch (error) {
+          console.log(error);
+      }
+  }
+  fetchData();
+  },[])
+
   return (
     <>
       <div
@@ -32,44 +61,42 @@ const ClientOrder = (props) => {
         >
           <img
             className=" aspect-[1/1] w-[70px] border-[1px] mr-2 border-white rounded-[5px]"
-            src="../../public/images/img_games.png"
+            src={product.photos}
           />
           <div className="flex  flex-col text-white gap-2 pb-2">
-            <h4 className="text-[16px] font-[400]">ps5 games</h4>
+            <h4 className="text-[16px] font-[400]">{product.productName}</h4>
             <p className="text-[8px] flex-1">
-              some of the cool games that i don't
+              {product.description}
             </p>
           </div>
         </div>
         <div className="flex flex-1 flex-col gap-2">
           <p className="text-white ">Size</p>
-          <p className="quant">M</p>
+          <p className="quant">{size}</p>
         </div>
         <div className="flex flex-1 flex-col gap-2">
           <p className="text-white ">Color</p>
-          <p className="color">Purple</p>{" "}
+          <p className="color">{color}</p>{" "}
         </div>
         <div className="flex flex-1 flex-col gap-2">
           <p className="text-white ">Quantity</p>
-          <p className="quant">x2</p>
+          <p className="quant">x{quantity}</p>
         </div>
         <div className="flex flex-1 flex-col gap-2">
-          {props.dimens > 0 && (
             <div className="flex flex-1 flex-col gap-2">
               <p className="text-white ">Dimens</p>
-              <p className="quant">{props.dimens}</p>
+              <p className="quant">{dimension}</p>
             </div>
-          )}
         </div>
 
         <div className="flex  flex-1 flex-col gap-2">
           <p className="text-white ">Price</p>
-          <p className="color">28$</p>{" "}
+          <p className="color">{product.price} DA</p>{" "}
         </div>
 
         <div className="flex  flex-1 flex-col gap-2">
           <p className="text-white ">Total Price</p>
-          <p className="color">56$</p>{" "}
+          <p className="color">{totalPrice} DA</p>{" "}
         </div>
       </div>
       {showButtons && (

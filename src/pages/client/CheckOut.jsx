@@ -1,7 +1,33 @@
 import React, { useState } from "react";
-import SellerOrder from "../../components/SellerOrder.jsx";
 import ClientOrder from "../../components/ClientOrder.jsx";
+import axios from 'axios';
+import { useEffect , useContext} from 'react';
+import App from '../../App.jsx'
+
 const CheckOut = () => {
+
+  const [cart , setCart] = useState([])
+  const [orders , setOrders] = useState([])
+
+  const {serverUrl} = useContext(App.context)
+
+  useEffect(()=>{
+    async function fetchData() {
+      try {
+          const ors = await axios.get(`${serverUrl}/api/v1/clients/orders`,{withCredentials:true});
+          setOrders(ors.data.data)
+
+          const items = await axios.get(`${serverUrl}/api/v1/clients/cart-items`,{withCredentials:true});
+          setCart(items.data.data)
+
+      } catch (error) {
+          console.log(error);
+      }
+  }
+  fetchData();
+  },[])
+
+
   return (
     <div id="seller-orders">
       <div className="title">
@@ -14,17 +40,15 @@ const CheckOut = () => {
         <hr />
       </div>
       <div className="orders">
-        <ClientOrder dimens={0} confirmed={true} />
-        <ClientOrder dimens={65} confirmed={true} />
-        <ClientOrder dimens={0} confirmed={true} />
-        <ClientOrder dimens={0} confirmed={true} />
+        {orders.map(o=>{
+          return(<ClientOrder item={o} confirmed={true} />)
+        })}
       </div>
       <hr />
       <div className="orders">
-        <ClientOrder dimens={0} confirmed={false} />
-        <ClientOrder dimens={65} confirmed={false} />
-        <ClientOrder dimens={0} confirmed={false} />
-        <ClientOrder dimens={0} confirmed={false} />
+      {cart.map(o=>{
+          return(<ClientOrder item={o} confirmed={false} />)
+        })}
       </div>
     </div>
   );

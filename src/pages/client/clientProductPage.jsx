@@ -65,6 +65,7 @@ const ClientProductPage = () => {
     try {
       const rev = await axios.post(`${serverUrl}/api/v1/reviews`,review, { withCredentials: true });
       console.log(rev)
+      setMessage("comment was added !!")
     } catch (error) {
       console.log(error);
   }
@@ -124,7 +125,7 @@ const ClientProductPage = () => {
   return (
     <>
       <div className="max-w-7xl mx-auto px-12 sm:px-6 lg:px-8 py-8 border-2 border-gray-500 rounded-lg mt-10 mb-4">
-        <div className="grid grid-cols-2 md:grid-cols-2 gap-16 sm:grid-cols-1 lg:padding-x">
+        <div className="grid items-start grid-cols-2 md:grid-cols-2 gap-16 sm:grid-cols-1 lg:padding-x">
           {/* Image Carousel */}
           <div className="flex flex-col justify-between  gap-11">
             <div className="image-gallery-container">
@@ -338,7 +339,7 @@ const ReviewsSection = ({ reviews }) => {
     <div className="border-t border-gray-300 py-6 mt-4">
       <h3 className="text-lg font-bold mb-4">Customer Reviews</h3>
       {reviews.map((review) => (
-        <div key={review._id} className="mb-4 pt-4">
+        <div key={review._id} className="mb-4 pt-4 scroll-m-11">
           <p className="text-gray-700 ">{review.comment}</p>
           <div className="flex items-center mb-2">
             <ReactStarsRating
