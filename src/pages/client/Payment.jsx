@@ -1,6 +1,8 @@
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useEffect , useContext , useState} from 'react';
+import App from '../../App.jsx'
 import Loading from '../../components/Loading';
 
 function Payment() {
@@ -10,11 +12,13 @@ function Payment() {
     const [order, setOrder] = useState({});
     const [product, setProduct] = useState({});
 
+    const {serverUrl} = useContext(App.context)
+
     useEffect(() => {
         async function fetchData() {
             try {
-                const item = await axios.get(`http://localhost:3000/api/v1/cart-items/${id}`, { withCredentials: true });
-                const product = await axios.get(`https://ecom-backend-nv4n.onrender.com/api/v1/products/${item.data.data.productId}`);
+                const item = await axios.get(`${serverUrl}/api/v1/cart-items/${id}`, { withCredentials: true });
+                const product = await axios.get(`${serverUrl}/api/v1/products/${item.data.data.productId}`);
 
                 setCartItem(item.data.data);
                 setProduct(product.data.data);
@@ -49,7 +53,9 @@ function Payment() {
     const confirmHandler = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:3000/api/v1/orders', order, { withCredentials: true });
+            await axios.post(`${serverUrl}/api/v1/orders`, order, { withCredentials: true });
+            const del = await axios.delete(`${serverUrl}/api/v1/cart-items/${id}`, { withCredentials: true });
+            console.log(del)
             navigate('/client/home');
         } catch (error) {
             console.log(error);

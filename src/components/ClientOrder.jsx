@@ -2,12 +2,14 @@
 import axios from 'axios';
 import { useEffect , useContext , useState} from 'react';
 import App from '../App.jsx'
+import { useNavigate } from 'react-router-dom';
 
 const ClientOrder = (props) => {
   let [confirmed, setConfirmed] = useState(props.confirmed);
   const [showButtons, setShowButtons] = useState(false);
   
   const {
+    _id,
     productId,
     quantity,
     size,
@@ -16,21 +18,31 @@ const ClientOrder = (props) => {
     totalPrice
   } = props.item ;
   
+  const navigate = useNavigate()
+
   const handleShowButtons = () => {
     if (!confirmed) {
       setShowButtons(!showButtons);
     }
   };
   const handleConfirmPurchase = () => {
-    // Confirm purchase logic here
+    navigate(`/client/payment/${_id}`)
   };
 
   const handleEditItem = () => {
     // Edit item logic here
   };
 
-  const handleDeleteItem = () => {
+  const handleDeleteItem = async () => {
     // Delete item logic here
+    try {
+      const prod = await axios.delete(`${serverUrl}/api/v1/cart-items/${_id}`,{withCredentials:true});
+      if(prod) alert('cart item has been deleted !!')
+      console.log(prod.data.data)
+  } catch (error) {
+      console.log(error);
+  }
+
   };
   
   const [product , setProduct] = useState([])
