@@ -9,42 +9,20 @@ import { useEffect , useContext} from 'react';
 import App from '../../App.jsx'
 
 
-const reviews = [
-  {
-    id: 1,
-    rating: 4.5,
-    comment: "Great product! Fits perfectly and looks amazing.",
-    name: "John Doe",
-    date: "2023-05-01",
-  },
-  {
-    id: 2,
-    rating: 3.0,
-    comment:
-      "It's a decent product, but I expected better quality for the price.",
-    name: "Jane Smith",
-    date: "2023-04-25",
-  },
-  // Add more reviews here
-];
-
-
-
 const ClientProductPage = () => {
   
-
-  // Start of state variables
   const [quantity, setQuantity] = useState(1);
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState("");
-  const [comments, setComments] = useState([]);
   const [color, setColor] = useState("");
   const [size, setSize] = useState("");
   const [dimension, setDimension] = useState("");
+  
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
 
-
-  // End of state variables
-  // Handle functions
+  const [product , setProduct] = useState({})
+  const [seller , setSeller ] = useState({})
+  const [reviews , setReviews] = useState([])
+  const [rate , setRate] = useState(0)
 
   const handleQuantityChange = (e) => {
     setQuantity(e.target.value);
@@ -54,14 +32,40 @@ const ClientProductPage = () => {
     setRating(newRating);
   };
 
-  const handleCommentSubmit = (e) => {
+  
+  const handleCommentSubmit = async (e) => {
     e.preventDefault();
-    if (comment.trim() !== "") {
-      setComments([...comments, { text: comment, rating }]);
-      setComment("");
-      setRating(0);
+    
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString('en-US', {
+      year: '2-digit',
+      month: '2-digit',
+      day: '2-digit',
+    });
+    const formattedTime = currentDate.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  
+    const reviewDateTime = `${formattedDate} ${formattedTime}`;
+  
+    const review = {
+      productId: id,
+      fullname: userinfo.client_info.fullname ,
+      rating: rating,
+      comment: comment,
+      reviewDate: reviewDateTime,
     }
+
+    try {
+      const rev = await axios.post(`${serverUrl}/api/v1/reviews`,review, { withCredentials: true });
+      console.log(rev)
+    } catch (error) {
+      console.log(error);
+  }
+
   };
+  
 
 
   const addToCart = async (e) => {
@@ -86,18 +90,24 @@ const ClientProductPage = () => {
 
   const id = useParams().id
   
-  const [product2 , setProduct2] = useState({})
-  const [seller , setSeller ] = useState({})
-  const {serverUrl} = useContext(App.context)
+  const {serverUrl , userinfo} = useContext(App.context)
 
   useEffect(()=>{
     async function fetchData() {
       try {
           const product = await axios.get(`${serverUrl}/api/v1/products/${id}`,{withCredentials:true});
-          setProduct2(product.data.data)
+          setProduct(product.data.data)
           const sellerId = product.data.data.sellerId
           const seller = await axios.get(`${serverUrl}/api/v1/sellers/${sellerId}`, { withCredentials: true });
           setSeller(seller.data.data)
+          const revs = await axios.get(`${serverUrl}/api/v1/products/${id}/reviews`,{withCredentials:true});
+          setReviews(revs.data.data)
+          let totalRev = 0
+          revs.data.data.forEach(element => {
+            totalRev += element.rating
+          });
+          const avRate = totalRev / revs.data.data.length
+          setRate(avRate)
       } catch (error) {
           console.log(error);
       }
@@ -116,9 +126,28 @@ const ClientProductPage = () => {
             </div>
             {/* Comments Section */}
             <form onSubmit={handleCommentSubmit} className="mt-30">
-                <img className="product-page-image" src={product2.photos}
+                <img className="product-page-image" src={product.photos}
                 />
-              
+              <h4 className="font-semibold text-xl">Add a review : </h4>
+              <br/>
+              <div className="flex items-center">
+              <ReactStarsRating
+                count={5}
+                size={24}
+                activeColor="#ffd700"
+                value={rating}
+                onChange={handleRatingChange}
+                isHalf={true}
+                emptyIcon={<FaStar />}
+                halfIcon={<FaStar />}
+                filledIcon={<FaStar />
+              }
+              />
+              <span className="text-gray-600 ml-2">
+              ({rating.toFixed(1)})
+              </span>
+              </div>
+              <br/>
               <textarea
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
@@ -137,24 +166,26 @@ const ClientProductPage = () => {
 
           {/* Product Details Section */}
           <div className="py-2">
-            <h1 className="text-3xl font-bold mb-4 py-4">{product2.productName}</h1>
-            <p className="text-gray-600 mb-4">{product2.description}</p>
+            <h1 className="text-3xl font-bold mb-4 py-4">{product.productName}</h1>
+            <p className="text-gray-600 mb-4">{product.description}</p>
             <div className="flex items-center mb-4">
-              <ReactStarsRating
-                count={5}
-                size={24}
-                activeColor="#ffd700"
-                value={rating}
-                onChange={handleRatingChange}
-                isHalf={true}
-                emptyIcon={<FaStar />}
-                halfIcon={<FaStar />}
-                filledIcon={<FaStar />}
-              />
-              <span className="text-gray-600 ml-2">({rating.toFixed(1)})</span>
-            </div>
+            <ReactStarsRating
+              count={5}
+              size={16}
+              activeColor="#ffd700"
+              value={rate}
+              edit={false}
+              isHalf={true}
+              emptyIcon={<FaStar />}
+              halfIcon={<FaStar />}
+              filledIcon={<FaStar />}
+            />
+            <span className="text-gray-600 ml-2">
+              ({rate.toFixed(1)})
+            </span>
+          </div>
             <p className="text-2xl font-bold text-gray-800 mb-4">
-              {product2.price} DA
+              {product.price} DA
             </p>
             <p className="text-gray-600 mb-4">
               Sold by:{" "}
@@ -185,7 +216,7 @@ const ClientProductPage = () => {
               </div>
               
 
-              {product2.colors && (
+              {product.colors && (
   <div className="mr-4 mb-4">
     <label
       htmlFor="color"
@@ -202,7 +233,7 @@ const ClientProductPage = () => {
         className="w-40 px-2 py-1 border border-gray-300 rounded-l-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
       >
         <option value="">Select Color</option>
-        {product2.colors.map((s) => {
+        {product.colors.map((s) => {
           return <option key={s} value={s}>{s}</option>;
         })}
       </select>
@@ -213,7 +244,7 @@ const ClientProductPage = () => {
   </div>
 )}
 
-{product2.sizes && (
+{product.sizes && (
               <div className="mr-4 mb-4">
                 <label
                   htmlFor="size"
@@ -230,7 +261,7 @@ const ClientProductPage = () => {
                     className="w-40 px-4 py-2 border border-gray-300 rounded-l-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500  appearance-none"
                   >
                     <option value="">Select Size</option>
-                    { product2.sizes.map(s=>{
+                    { product.sizes.map(s=>{
                       return(<option key={s} value={s}>{s}</option>)
                     })}
 
@@ -242,7 +273,7 @@ const ClientProductPage = () => {
                 </div>
               </div>
              )}
-{product2.dimensions && (
+{product.dimensions && (
   <div className="mr-4 mb-4">
     <label
       htmlFor="color"
@@ -259,7 +290,7 @@ const ClientProductPage = () => {
         className="w-40 px-2 py-1 border border-gray-300 rounded-l-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
       >
         <option value="">Select Dimension</option>
-        {product2.dimensions.map((s) => {
+        {product.dimensions.map((s) => {
           return <option key={s} value={s}>{s}</option>;
         })}
       </select>
@@ -299,7 +330,7 @@ const ReviewsSection = ({ reviews }) => {
     <div className="border-t border-gray-300 py-6 mt-4">
       <h3 className="text-lg font-bold mb-4">Customer Reviews</h3>
       {reviews.map((review) => (
-        <div key={review.id} className="mb-4 pt-4">
+        <div key={review._id} className="mb-4 pt-4">
           <p className="text-gray-700 ">{review.comment}</p>
           <div className="flex items-center mb-2">
             <ReactStarsRating
@@ -318,7 +349,7 @@ const ReviewsSection = ({ reviews }) => {
             </span>
           </div>
           <p className="text-gray-500 mt-1 font-semibold">
-            By {review.name} on {review.date}
+            By {review.fullname} on {review.reviewDate}
           </p>
         </div>
       ))}
