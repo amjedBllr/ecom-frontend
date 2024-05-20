@@ -1,5 +1,5 @@
 import ProductCard from "../components/ProductCard";
-import { data } from "../constantes/index";
+
 import axios from 'axios';
 import { useEffect , useContext , useState} from 'react';
 import App from '../App.jsx'

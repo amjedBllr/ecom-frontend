@@ -1,12 +1,10 @@
 
 import Footer from "../../components/Footer";
 import ProductCard from "../../components/ProductCard";
-
 import { Link } from "react-router-dom";
 import CategoryList from "../../components/Header/HeaderLinks";
 import React from "react";
 import optionIcon from "../../../public/icons/options.png";
-
 import axios from 'axios';
 import { useEffect , useContext , useState , useRef} from 'react';
 import App from "../../App";
