@@ -35,7 +35,7 @@ import AdminProfile from "./pages/admin/AdminProfile.jsx";
 
 
 //?general imports
-import CategoryPage from "./pages/seller/CategoryPage.jsx";
+import CategoryPage from "./pages/client/CategoryPage.jsx";
 import HomePage from "./pages/HomePage";
 import SignIn from "./pages/Auth/SignIn";
 import SignUp from "./pages/Auth/SignUp";

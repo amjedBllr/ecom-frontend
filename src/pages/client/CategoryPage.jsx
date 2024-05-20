@@ -1,12 +1,13 @@
-import ProductCard from "../../components/ProductCard";
-import { useParams } from "react-router-dom";
+import ProductCard from "../../components/ProductCard.jsx";
+import { useParams , useLocation } from "react-router-dom";
 import axios from 'axios';
 import { useEffect, useContext, useState, useRef } from 'react';
 import App from '../../App.jsx';
+import Loading from "../../components/Loading.jsx";
 
 const CategoryPage = () => {
   const { category } = useParams();
-
+  console.log(category)
   const [cat , setCat] = useState('')
   const [type , setType] = useState(category)
   const [page, setPage] = useState(1);
@@ -14,8 +15,8 @@ const CategoryPage = () => {
   const [message, setMessage] = useState("");
   const { serverUrl } = useContext(App.context);
   const resultsRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-console.log(useParams())
   const handleSearch = async () => {
     let query = `?category=${cat}&type=${type}&page=${page}`;
 
@@ -28,6 +29,9 @@ console.log(useParams())
       setProducts([]);
       setMessage(error.response.data.message);
     }
+    finally{
+      setIsLoading(false)
+    }
   };
 
   useEffect(() => {
@@ -37,7 +41,9 @@ console.log(useParams())
     }
   }, [cat,page]);
 
+
   useEffect( () => {
+    setIsLoading(true)
     const fetchData = async ()=>{
       try {
         const cat = await axios.get(`${serverUrl}/api/v1/types/${category}`,{withCredentials:true});
@@ -48,7 +54,12 @@ console.log(useParams())
       
     }
     fetchData()
-  }, []);
+    setType(category)
+  }, [,category]);
+
+  if (isLoading) {
+    return <Loading/>;
+  }
 
   return (
     <>
