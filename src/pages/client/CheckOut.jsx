@@ -44,7 +44,15 @@ const CheckOut = () => {
           return(<ClientOrder item={o} confirmed={true} />)
         })}
       </div>
-      <hr />
+      <div className="title">
+        <h2>
+          Cart
+          <br />
+          <span>(Unconfirmed purchases)</span>
+        </h2>
+        <p></p>
+        <hr />
+      </div>
       <div className="orders">
       {cart.map(o=>{
           return(<ClientOrder item={o} confirmed={false} />)
