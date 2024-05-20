@@ -134,7 +134,7 @@ function CategoryList() {
               {category.miniCategories.map((miniCategory, miniIndex) => (
                 <li key={miniIndex} className="border-b  border-gray-200">
                   <a
-                    href={miniCategory.link}
+                    href={`/client/products/type/${miniCategory.label}`}
                     className="block p-3 hover:bg-gray-100 transition-colors"
                   >
                     {miniCategory.label}

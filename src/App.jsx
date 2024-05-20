@@ -123,7 +123,7 @@ function App() {
                               <Route path='about-us' element={<AboutUs/>}/>
                               <Route path='profile' element={<ClientProfile/>}/>
                               <Route path="cart" element={<CheckOut />} />
-                              <Route path="category/:categoryName" element={<CategoryPage />} />
+                              <Route path="products/type/:category" element={<CategoryPage />} />
                               <Route path="product/:id" element={<ClientProductPage />} />
                               <Route path='payment/:id' element={<Payment />}/>
                               <Route path='*' element={<NotFoundPage/>}/>
