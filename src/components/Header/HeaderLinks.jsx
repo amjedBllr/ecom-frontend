@@ -6,8 +6,8 @@ const categories = [
   {
     name: "Electronics",
     miniCategories: [
-      { link: "/client/products/type/Computers%20&%20Tablets", label: "Computers & Tablets" },
-      { link: "/client/products/type/Cell%20Phones", label: "Cell Phones" },
+      { link: "/client/products/type/Computers&Tablets", label: "Computers & Tablets" },
+      { link: "/client/products/type/CellPhones", label: "Cell Phones" },
       { link: "/client/products/type/TV%20&%20Home%20Theater", label: "TV & Home Theater" },
       { link: "/client/products/type/Video%20Games%20&%20Consoles", label: "Video Games & Consoles" },
     ],
