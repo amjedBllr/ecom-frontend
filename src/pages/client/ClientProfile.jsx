@@ -1,27 +1,29 @@
 import { useState } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-
+import axios from 'axios';
+import { useEffect , useContext} from 'react';
+import App from '../../App.jsx'
 import { FaUserCircle } from "react-icons/fa"; // Import the profile icon
 
 const ClientProfile = () => {
-  const [accountInformation, setAccountInformation] = useState({
-    email: "example@example.com",
-    username: "exampleUser",
-    password: "examplePassword",
-    profilePic: "",
-  });
 
-  const [clientInformation, setClientInformation] = useState({
-    fullName: "John Doe",
-    gender: "Male",
-    phoneNumber: "123-456-7890",
-    birthday: "1990-01-01",
-    shippingAddress1: "123 Example St",
-    shippingAddress2: "Apt 4B",
-    creditCardNumber: "1234-5678-9012-3456",
-    paypalAccountNumber: "example@paypal.com",
-  });
+  const {userinfo , serverUrl} = useContext(App.context)
+  let {_id,email,username,pfp} = userinfo.user_info
+  const [accountInformation, setAccountInformation] = useState(
+    {
+      _id:_id,
+      email:email,
+      username:username,
+      pfp:pfp
+    }
+  );
+
+  const [image , setImage] = useState(pfp)
+
+  const [accountMessage , setAccountMessage] = useState("")
+  const [clientMessage , setClientMessage] = useState("")
+  const [clientInformation, setClientInformation] = useState(userinfo.client_info);
   // handle the changes of the first form Acoonut
   const handleAccountChange = (e) => {
     setAccountInformation({
@@ -37,29 +39,66 @@ const ClientProfile = () => {
     });
   };
 
-  const handleAccountSubmit = (e) => {
-    e.preventDefault();
-    // Handle account information submit
-  };
 
-  const handleClientSubmit = (e) => {
+  const handleAccountSubmit = async (e) => {
     e.preventDefault();
-    // Handle client information submit
-  };
-  // to change the picture of the profile
-  const handleProfilePicChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAccountInformation({
-          ...accountInformation,
-          profilePic: reader.result,
-        });
-      };
-      reader.readAsDataURL(file);
+    try {
+      setAccountMessage("proccessing ...")
+      const formData = new FormData();
+      Object.entries(accountInformation).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+      if (image) {
+        formData.append('pfp', image); // Add the image file to FormData
+      }
+      const user = await axios.patch(`${serverUrl}/api/v1/users/${accountInformation._id}`, formData, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'multipart/form-data', // Set the appropriate header for FormData
+        },
+      });
+      console.log(user);
+      setAccountMessage("User information was patched successfully !!")
+    } catch (error) {
+      console.log(error);
     }
   };
+
+  const handleClientSubmit = async (e) => {
+    e.preventDefault();
+    console.log(clientInformation)
+    try {
+      setClientMessage("proccessing ...")
+
+      const client = await axios.patch(`${serverUrl}/api/v1/clients/${clientInformation._id}`, clientInformation, {
+        withCredentials: true,
+      });
+      console.log(client);
+      setClientMessage("Client information was patched successfully !!")
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+const handleProfilePicChange = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setAccountInformation({
+        ...accountInformation,
+        pfp: reader.result, // Store the preview URL
+         // Store the file object
+      });
+    };
+    reader.readAsDataURL(file);
+    setImage(file)
+    console.log(image)
+  
+  }
+
+};
+
   // handle Changes password
   const changePassword = () => {
     const newPassword = prompt("Enter new password");
@@ -106,9 +145,10 @@ const ClientProfile = () => {
               <div className="flex gap-8 items-center ">
                 <input
                   name="password"
-                  value={accountInformation.password}
+                  value="************"
                   onChange={handleAccountChange}
                   className="input flex-1"
+                  disabled
                 />
                 <div>
                   <button
@@ -127,24 +167,6 @@ const ClientProfile = () => {
 
             <div>
               <label className="label">Profile Picture</label>
-              <div
-                onClick={() =>
-                  document.getElementById("profilePicInput").click()
-                }
-                className="w-40 h-40 border border-black rounded-full overflow-hidden cursor-pointer"
-              >
-                {accountInformation.profilePic ? (
-                  <img
-                    src={accountInformation.profilePic}
-                    alt="Profile"
-                    className=" bg-contain"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <FaUserCircle size={80} className="w-full h-full" />
-                  </div>
-                )}
-              </div>
               <input
                 id="profilePicInput"
                 type="file"
@@ -152,26 +174,46 @@ const ClientProfile = () => {
                 onChange={handleProfilePicChange}
                 style={{ display: "none" }}
               />
+              <div
+                onClick={() =>
+                  document.getElementById("profilePicInput").click()
+                }
+                className="w-40 h-40 m-4 mt-8 mb-10 border border-black rounded-full overflow-hidden cursor-pointer"
+              >
+                {accountInformation.pfp ? (
+                  <img
+                    src={accountInformation.pfp} // Use the preview URL
+                    alt="Profile"
+                    className="bg-cover aspect-square"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <FaUserCircle size={80} className="w-full h-full" />
+                  </div>
+                )}
+              </div>
             </div>
+            <p className="text-green-600">{accountMessage}</p>
+            <br/>
             <button type="submit" className="button w-[200px]">
               Confirm Changes
             </button>
           </form>
           <hr />
           {/* Client info Form */}
-          <h3 className="text-2xl font-bold text-black mb-4">
+          <h3 className="mt-10 text-2xl font-bold text-black mb-4">
             Client Information
           </h3>
 
           <hr className="border-t border-gray-400 " />
           <form onSubmit={handleClientSubmit} className="space-y-4">
             <div className="flex  justify-between gap-8 ">
-              {/* fullname */}
+              {/* username */}
               <div className="flex-1">
                 <label className="block text-black">Full Name</label>
                 <input
-                  name="fullName"
-                  value={clientInformation.fullName}
+                  name="fullname"
+                  value={clientInformation.fullname}
                   onChange={handleClientChange}
                   className="input"
                 />
@@ -218,8 +260,8 @@ const ClientProfile = () => {
               <div className="flex-1">
                 <label className="label">Shipping Address 1</label>
                 <input
-                  name="shippingAddress1"
-                  value={clientInformation.shippingAddress1}
+                  name="shippingAddress"
+                  value={clientInformation.shippingAddress}
                   onChange={handleClientChange}
                   className="input"
                 />
@@ -227,8 +269,8 @@ const ClientProfile = () => {
               <div className="flex-1">
                 <label className="label">Shipping Address 2</label>
                 <input
-                  name="shippingAddress2"
-                  value={clientInformation.shippingAddress2}
+                  name="secondaryShippingAddress"
+                  value={clientInformation.secondaryShippingAddress}
                   onChange={handleClientChange}
                   className="input"
                 />
@@ -244,15 +286,27 @@ const ClientProfile = () => {
               />
             </div>
             <div>
-              <label className="label">Paypal Account Number</label>
+              <label className="label">Edahabia Card Number</label>
               <input
-                name="paypalAccountNumber"
-                value={clientInformation.paypalAccountNumber}
+                name="edahabiaNumber"
+                value={clientInformation.edahabiaNumber}
                 onChange={handleClientChange}
                 className="input"
               />
             </div>
-            <div className="flex justify-center">
+            <div>
+              <label className="label">Paypal Email</label>
+              <input
+                name="paypalEmail"
+                value={clientInformation.paypalEmail}
+                onChange={handleClientChange}
+                className="input"
+              />
+            </div>
+            <br/>
+              <p className="text-green-600">{clientMessage}</p>
+              <br/>
+            <div className="">
               <button type="submit" className="button px-[20px] mt-4 ">
                 Confirm Changes
               </button>

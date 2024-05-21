@@ -56,7 +56,7 @@ function Payment() {
             await axios.post(`${serverUrl}/api/v1/orders`, order, { withCredentials: true });
             const del = await axios.delete(`${serverUrl}/api/v1/cart-items/${id}`, { withCredentials: true });
             console.log(del)
-            navigate('/client/home');
+            navigate('/client/cart');
         } catch (error) {
             console.log(error);
         }
