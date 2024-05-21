@@ -14,11 +14,15 @@ const CheckOut = () => {
   useEffect(()=>{
     async function fetchData() {
       try {
+
+        
+        const items = await axios.get(`${serverUrl}/api/v1/clients/cart-items`,{withCredentials:true});
+        setCart(items.data.data)
+        console.log(items.data.data)
+        
           const ors = await axios.get(`${serverUrl}/api/v1/clients/orders`,{withCredentials:true});
           setOrders(ors.data.data)
 
-          const items = await axios.get(`${serverUrl}/api/v1/clients/cart-items`,{withCredentials:true});
-          setCart(items.data.data)
 
       } catch (error) {
           console.log(error);

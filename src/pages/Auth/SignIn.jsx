@@ -44,7 +44,7 @@ const SignIn = () => {
     if(isLoggedIn){
       if(userRole === 'client') navigate('/client/home')
       else if(userRole === 'seller') navigate('/seller/home/store')
-      else if(userRole === 'admin') navigate('/admin/home')
+      else if(userRole === 'admin') navigate('/admin/home/users')
     }
   },[])
   return (

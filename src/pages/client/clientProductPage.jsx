@@ -24,7 +24,7 @@ const ClientProductPage = () => {
   const [seller , setSeller ] = useState({})
   const [reviews , setReviews] = useState([])
   const [rate , setRate] = useState(0)
-
+  const [addMessage , setAddMessage] = useState("")
 
   const handleQuantityChange = (e) => {
     setQuantity(e.target.value);
@@ -76,6 +76,7 @@ const ClientProductPage = () => {
 
   const addToCart = async (e) => {
     e.preventDefault();
+    setAddMessage("proccessing...")
     const cartItem = {
       productId: id,
       quantity: quantity,
@@ -86,8 +87,10 @@ const ClientProductPage = () => {
     try {
       const item = await axios.post(`${serverUrl}/api/v1/cart-items`,cartItem,{withCredentials:true});
       console.log(item)
+      setAddMessage("product was added to cart !!")
     } catch (error) {
       console.log(item)
+      setAddMessage("Failed adding product to cart :'(")
     }
     
   };
@@ -312,7 +315,7 @@ const ClientProductPage = () => {
              </div>
 
              
-
+            <br/><p className="text-green-500">{addMessage}</p><br/>
             <button onClick={addToCart} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-4 flex items-center">
               <FaShoppingCart className="inline-block mr-2" />
               Add to Cart
