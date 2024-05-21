@@ -5,7 +5,7 @@ import ProductManagementCard from "../../components/Admin/ProductManagementCard.
 
 const ProductsManagement = () => {
   const [searchByNameInput, setSearchByNameInput] = useState("");
-  const [searchByIdInput, setSearchByIdInput] = useState("");
+
   const [page, setPage] = useState(1);
   const [products, setProducts] = useState([]);
 
@@ -13,19 +13,13 @@ const ProductsManagement = () => {
 
   const handleSearchByName = (e) => {
     setSearchByNameInput(e.target.value);
+
   };
 
-  const handleSearchById = (e) => {
-    setSearchByIdInput(e.target.value);
-  };
 
   const fetchProductsByName = async () => {
     try {
-      const response = await axios.get(`${serverUrl}/api/v1/products/searchByName`, {
-        params: {
-          name: searchByNameInput,
-          page
-        },
+      const response = await axios.get(`${serverUrl}/api/v1/products/?name=${searchByNameInput}`, {
         withCredentials: true
       });
       setProducts(response.data.data);
@@ -34,20 +28,6 @@ const ProductsManagement = () => {
     }
   };
 
-  const fetchProductsById = async () => {
-    try {
-      const response = await axios.get(`${serverUrl}/api/v1/products/searchById`, {
-        params: {
-          id: searchByIdInput,
-          page
-        },
-        withCredentials: true
-      });
-      setProducts(response.data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   useEffect(() => {
     async function fetchData() {
@@ -91,19 +71,6 @@ const ProductsManagement = () => {
             />
             <button className="button px-4 py-2" onClick={fetchProductsByName}>Search by Name</button>
           </div>
-          <div className="flex gap-4 items-center">
-            <label className="font-bold text-2xl text-nowrap">
-              Search by id
-            </label>
-            <input
-              type="text"
-              name="SearchById"
-              className="product-input w-[200px]"
-              placeholder="Search by id"
-              onChange={handleSearchById}
-            />
-            <button className="button px-4 py-2" onClick={fetchProductsById}>Search by ID</button>
-          </div>
         </div>
         <div className="relative">
           <div className="orders mt-12">
@@ -118,6 +85,26 @@ const ProductsManagement = () => {
             {products.map((product) => {
               return <ProductManagementCard key={product._id} product={product} />;
             })}
+            <br/><br/><br/>
+            <div className="h-full flex justify-center items-center gap-10">
+        <button
+          onClick={() => {
+            setPage(prev => Math.max(prev - 1, 1));
+          }}
+          className="px-4 py-2 bg-blue-500 text-white rounded"
+        >
+          Prev Page
+        </button>
+        <p className="font-semibold">{page}</p>
+        <button
+          onClick={() => {
+            setPage(prev => prev + 1);
+          }}
+          className="px-4 py-2 bg-blue-500 text-white rounded"
+        >
+          Next Page
+        </button>
+      </div>
           </div>
         </div>
       </div>
