@@ -82,9 +82,11 @@ const UserCard = (props) => {
       </div>
 
       <div className="flex col-span-1 flex-col gap-8">
-        {/* <p className="text-white font-bold">Status </p> */}
-        <p className="color">{role==="client"?<p className="text-center">email<br/>{accountStatus}</p> : <p className="text-center">information<br/>{seller.sellerStatus}</p>}</p>{" "}
-      </div>
+      <p className={`text-center ${role === "client" ? (accountStatus === 'verified' ? 'text-green-500' : 'text-red-500') : (seller.sellerStatus === 'verified' ? 'text-green-500' : 'text-red-500')}`}>
+    {role === "client" ? `email\n${accountStatus}` : `information\n${seller.sellerStatus}`}
+      </p>
+    </div>
+
 
       <div className="flex flex-1 flex-col col-span-4">
         {/* <p className="text-white text-nowrap font-bold text-center  ">

@@ -1,19 +1,17 @@
-import UserCard from "../../components/Admin/UserCard.jsx";
 import React, { useState, useEffect, useContext } from 'react';
-import App from '../../App';
 import axios from 'axios';
+import UserCard from "../../components/Admin/UserCard.jsx";
+import App from '../../App';
 
 const UserMangement = () => {
-  let [filters, setFilters] = useState({
-    hideVerfied: false,
+  const [filters, setFilters] = useState({
+    hideClients: false,
     sortDate: false,
+    hideSellers:false
   });
-  let [clicked, setClicked] = useState(false);
-  const handleShowInfoClick = () => {
-    setClicked(!clicked);
-  };
-  let [users,setUsers] = useState([])
 
+  let [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const { serverUrl } = useContext(App.context);
 
   const handleClick = (event) => {
@@ -24,7 +22,27 @@ const UserMangement = () => {
     }));
   };
 
+  useEffect(() => {
+    applyFilters();
+  }, [filters, users]);
 
+  const applyFilters = () => {
+    let updatedUsers = [...users];
+
+    if (filters.hideClients) {
+      updatedUsers = updatedUsers.filter(user => user.role !== 'client');
+    }
+    
+    if (filters.hideSellers) {
+      updatedUsers = updatedUsers.filter(user => user.role !== 'seller');
+    }
+
+    if (filters.sortDate) {
+      updatedUsers.sort((a, b) => new Date(b.registrationDate) - new Date(a.registrationDate));
+    }
+
+    setFilteredUsers(updatedUsers);
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -54,21 +72,37 @@ const UserMangement = () => {
         <div className="ml-40 flex justify-start items-center pb-4">
           <div className="flex justify-center items-center mr-12">
             <label
-              htmlFor="hideVerfied"
-              className="text-gray-700 text-2xl w-full text-nowrap  font-bold"
+              htmlFor="hideClients"
+              className="text-gray-700 text-2xl w-full text-nowrap font-bold"
             >
-              Hide verified users
+              Hide clients
             </label>
             <input
               className="ml-2"
               style={{ height: "24px", width: "24px" }}
               type="checkbox"
-              name="hideVerfied"
-              checked={filters.hideVerfied}
+              name="hideClients"
+              checked={filters.hideClients}
               onChange={handleClick}
             />
           </div>
-          <div className="flex items-center ">
+          <div className="flex justify-center items-center mr-12">
+            <label
+              htmlFor="hideSellers"
+              className="text-gray-700 text-2xl w-full text-nowrap font-bold"
+            >
+              Hide sellers
+            </label>
+            <input
+              className="ml-2"
+              style={{ height: "24px", width: "24px" }}
+              type="checkbox"
+              name="hideSellers"
+              checked={filters.hideSellers}
+              onChange={handleClick}
+            />
+          </div>
+          <div className="flex items-center">
             <label
               htmlFor="sortDate"
               className="text-gray-700 text-2xl w-full text-nowrap ml-4 font-bold"
@@ -83,15 +117,15 @@ const UserMangement = () => {
               checked={filters.sortDate}
               onChange={handleClick}
             />
-          </div>{" "}
+          </div>
         </div>
         <hr className="hr" />
 
         <div className="relative">
-          <div className="orders ">
-            <div className="w-[95%] mb-[-20px] ">
+          <div className="orders">
+            <div className="w-[95%] mb-[-20px]">
               <div className="grid grid-cols-10 w-[100%] my-4 pl-12">
-                <p className="col-span-2"> Email</p>
+                <p className="col-span-2">Email</p>
                 <p className="col-span-1">Role</p>
                 <p className="col-span-2">Registration Date</p>
                 <p className="col-span-1">Status</p>
@@ -101,11 +135,11 @@ const UserMangement = () => {
             </div>
 
             {
-              users.map((user)=>{
-                return(<UserCard key ={user._id} user = {user} />)
+              filteredUsers.map((user) => {
+                return (<UserCard key={user._id} user={user} />);
               })
             }
-            
+
           </div>
         </div>
       </div>
