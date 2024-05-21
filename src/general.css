@@ -105,6 +105,52 @@
 
 
 
+/*! seller second nav styling */
+
+#adminSecondNav{
+    width: 100%;
+    height: 65px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid black;
+}
+
+#adminSecondNav li{
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 65px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#adminSecondNav li:hover{
+    background-color: var(--secondary-color);
+}
+
+#adminSecondNav li button{
+    border: none;
+    font-family: var(--main-font);
+    font-weight: 600;
+    font-size: 16px;
+    background-color: transparent;
+    color:#1E1E1E;
+    width: 100%;
+    height: 65px;
+}
+
+#adminSecondNav .link{
+    color: #1E1E1E;
+    width: 100%;
+    text-decoration: none;
+}
+
+
+
+
+
 
 /*! about us styling : */
 

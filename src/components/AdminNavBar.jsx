@@ -1,62 +1,73 @@
-import { useState } from "react";
-import { Link, Outlet } from "react-router-dom";
-import NotificationsModal from "../Modals/NotificationsModal";
-import "@fortawesome/fontawesome-free/css/all.min.css";
-import DefaultSidebar from "./Admin/AdminSideBar";
-import { Bars3Icon } from "@heroicons/react/24/solid";
-import { IconButton } from "@material-tailwind/react";
-const AdminNavBar = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
+import React, { useState } from 'react';
+import { Link } from "react-router-dom";
+
+const SellerFirstNav = () => {
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+
+  const toggleDropdown = () => {
+    setDropdownVisible(!dropdownVisible);
   };
 
   return (
-    <div className="flex flex-col min-h-screen z-12">
-      <header className="pl-20 " id="seller-first-nav">
-        <nav>
-          <ul className="right">
-            <li>
-              <Link to="help">help</Link>
-            </li>
-            <li>
-              <Link to="about">About</Link>
-            </li>
-          </ul>
-          <Link to="/admin/home" className="logo">
-            souqKantra
-          </Link>
-          <ul className="flex items-center gap-8">
-            <li>
-              <div className="relative">
-                <NotificationsModal />
+    <header id="seller-first-nav">
+      <nav>
+        <ul className="right">
+          <li>
+            <Link to="/admin/help">help</Link>
+          </li>
+          <li>
+            <Link to="/admin/about-us">About</Link>
+          </li>
+        </ul>
+        <Link to='/admin/home/users' className="logo">
+          SouqKantra
+        </Link>
+        <ul className="left">
+          <li>
+            <img src="../../public/icons/notification.png" alt="Notifications" />
+          </li>
+          <li className="dropdown">
+            <img
+              src="../../public/icons/img_lock.svg"
+              alt="Profile"
+              onClick={toggleDropdown}
+              style={{ cursor: 'pointer' }}
+            />
+            {dropdownVisible && (
+              <div className="dropdown-menu">
+                <Link to="/admin/profile" onClick={() => setDropdownVisible(false)}>Profile</Link>
+                <Link to="/logout" onClick={() => setDropdownVisible(false)}>Logout</Link>
               </div>
-            </li>
-            <li>
-              <Link to="profile">
-                <img src="../../public/icons/img_lock.svg" />
-              </Link>
-            </li>
-            <li>
-              <IconButton onClick={toggleSidebar}>
-                <Bars3Icon className="h-6 w-6" />
-              </IconButton>
-            </li>
-          </ul>
-        </nav>
-      </header>
-      <div className="flex flex-row flex-1">
-        <DefaultSidebar isSidebarOpen={isSidebarOpen} />
-        <div
-          className={`${
-            isSidebarOpen ? "ml-64" : ""
-          } flex-1 transition-all duration-300 ease-in-out`}
-        >
-          <Outlet />
-        </div>
-      </div>
-    </div>
+            )}
+          </li>
+        </ul>
+      </nav>
+      <style>
+        {`
+          .dropdown-menu {
+            position: absolute;
+            right: 4rem;
+            top: 4rem; /* Adjust this value based on your header height */
+            background-color: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+          }
+
+          .dropdown-menu a {
+            display: block;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #333;
+          }
+
+          .dropdown-menu a:hover {
+            background-color: #f0f0f0;
+          }
+        `}
+      </style>
+    </header>
   );
 };
 
-export default AdminNavBar;
+export default SellerFirstNav;

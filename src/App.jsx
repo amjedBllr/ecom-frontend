@@ -25,7 +25,7 @@ import SellerEditProduct from "./pages/seller/SellerEditProduct.jsx";
 
 //?admin imports 
 import AdminLayout from "./layouts/AdminLayout.jsx";
-import AdmineHome from "./pages/admin/AdminHome.jsx";
+import AdminHome from "./pages/admin/AdminHome.jsx"
 import UserMangement from "./pages/admin/UserMangement.jsx";
 import AdminQA from "./pages/admin/AdminQA.jsx";
 import ReportTreatment from "./pages/admin/ReportTreatment.jsx";
@@ -45,6 +45,7 @@ import Loading from "./components/Loading.jsx";
 import Logout from "./pages/Auth/Logout.jsx";
 import Header from "./components/Header.jsx";
 import Footer from "./components/Footer.jsx";
+
 
 
 
@@ -152,14 +153,17 @@ function App() {
                   {userRole === 'admin' && (
                       <>
                         <Route path="/admin" element={<AdminLayout />}>
-                            <Route path="home" element={<AdmineHome />} />
-                            <Route path="users" element={<UserMangement />} />
-                            <Route path="help" element={<AdminQA />} />
-                            <Route path="about" element={<AboutUs />} />
-                            <Route path="reports" element={<ReportTreatment />} />
+                            <Route path="help" element={<>help Page</>} />
+                            <Route path="about-us" element={<AboutUs />} />
                             <Route path="profile" element={<AdminProfile />} />
-                            <Route path="product-managemnt" element={<ProductsManagement />} />
-                            <Route path="*" element={<NotFoundPage dest="/admin/home" />} />
+                            <Route path="*" element={<NotFoundPage/>} />
+                        </Route>
+                        <Route path="/admin/home" element={<AdminHome />}>
+                            <Route path="users" element={<UserMangement />} />
+                            <Route path="products" element={<ProductsManagement />} />
+                            <Route path="reports" element={<ReportTreatment />} />
+                            <Route path="questions" element={<AdminQA/>} />
+                            <Route path="*" element={<NotFoundPage/>} />
                         </Route>
                       </>
                   )}
