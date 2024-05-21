@@ -34,6 +34,7 @@ const CategoryPage = () => {
 
   useEffect(() => {
     setIsLoading(true);
+    setPage(1)
     const fetchCategory = async () => {
       try {
         const catResponse = await axios.get(`${serverUrl}/api/v1/types/${category}`, { withCredentials: true });

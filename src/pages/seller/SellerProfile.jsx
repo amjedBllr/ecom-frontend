@@ -1,28 +1,28 @@
 import { useState } from "react";
 import { FaUserCircle } from "react-icons/fa"; // Import the profile icon
+import axios from 'axios';
+import { useEffect , useContext} from 'react';
+import App from '../../App.jsx'
 
 const SellerProfile = () => {
-  const [accountInformation, setAccountInformation] = useState({
-    email: "example@example.com",
-    username: "exampleUser",
-    password: "examplePassword",
-    profilePic: "",
-  });
 
-  const [sellerInformation, setSellerInformation] = useState({
-    sellerType: "individual",
-    businessName: "daWhiteGuy",
-    businessAddress: "lhouma lfoulania fi alitigah al foulani",
-    businessEmail: "business@business.dz",
-    businessPhone: "+3218123498",
-    creditCardActivity: false,
-    paypalActivity: false,
-    edahabiaActivity: false,
-    commerceRegisterNumber: "283945987345",
-    creditCardNumber: "32405982340958",
-    paypalNumber: "9q8498572345",
-    edahabiaNumber: "9897359873245",
-  });
+  const {userinfo , serverUrl} = useContext(App.context)
+  let {_id,email,username,pfp} = userinfo.user_info
+  const [accountInformation, setAccountInformation] = useState(
+    {
+      _id:_id,
+      email:email,
+      username:username,
+      pfp:pfp
+    }
+  );
+
+  const [image , setImage] = useState(pfp)
+
+  const [accountMessage , setAccountMessage] = useState("")
+  const [sellerMessage , setSellerMessage] = useState("")
+  const [sellerInformation, setSellerInformation] = useState(userinfo.seller_info);
+   
   // handle the changes of the first form Acoonut
   const handleAccountChange = (e) => {
     setAccountInformation({
@@ -41,14 +41,46 @@ const SellerProfile = () => {
     console.log(sellerInformation)
   };
 
-  const handleAccountSubmit = (e) => {
+  const handleAccountSubmit = async (e) => {
     e.preventDefault();
-    // Handle account information submit
+    try {
+      setAccountMessage("proccessing ...")
+      const formData = new FormData();
+      Object.entries(accountInformation).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+      if (image) {
+        formData.append('pfp', image); // Add the image file to FormData
+      }
+      const user = await axios.patch(`${serverUrl}/api/v1/users/${accountInformation._id}`, formData, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'multipart/form-data', // Set the appropriate header for FormData
+        },
+      });
+      console.log(user);
+      setAccountMessage("User information was patched successfully !!")
+    } catch (error) {
+      console.log(error);
+      setAccountMessage("Failed to patch user information !!")
+    }
   };
 
-  const handleSellerSubmit = (e) => {
+  const handleSellerSubmit = async (e) => {
     e.preventDefault();
-    // Handle client information submit
+    console.log(sellerInformation)
+    try {
+      setSellerMessage("proccessing ...")
+
+      const seller = await axios.patch(`${serverUrl}/api/v1/sellers/${sellerInformation._id}`, sellerInformation, {
+        withCredentials: true,
+      });
+      console.log(seller);
+      setSellerMessage("Seller information was patched successfully !!")
+    } catch (error) {
+      console.log(error);
+      setClientMessage("Failed to patch seller information !!")
+    }
   };
   // to change the picture of the profile
   const handleProfilePicChange = (e) => {
@@ -58,11 +90,16 @@ const SellerProfile = () => {
       reader.onloadend = () => {
         setAccountInformation({
           ...accountInformation,
-          profilePic: reader.result,
+          pfp: reader.result, // Store the preview URL
+           // Store the file object
         });
       };
       reader.readAsDataURL(file);
+      setImage(file)
+      console.log(image)
+    
     }
+  
   };
   // handle Changes password
   const changePassword = () => {
@@ -91,6 +128,7 @@ const SellerProfile = () => {
                   value={accountInformation.email}
                   onChange={handleAccountChange}
                   className="input"
+                  disabled
                 />
               </div>
               {/* UserName */}
@@ -110,9 +148,10 @@ const SellerProfile = () => {
               <div className="flex gap-8 items-center ">
                 <input
                   name="password"
-                  value={accountInformation.password}
+                  value="************"
                   onChange={handleAccountChange}
                   className="input flex-1"
+                  disabled
                 />
                 <div>
                   <button
@@ -131,24 +170,6 @@ const SellerProfile = () => {
 
             <div>
               <label className="label">Profile Picture</label>
-              <div
-                onClick={() =>
-                  document.getElementById("profilePicInput").click()
-                }
-                className="w-40 h-40 border border-black rounded-full overflow-hidden cursor-pointer"
-              >
-                {accountInformation.profilePic ? (
-                  <img
-                    src={accountInformation.profilePic}
-                    alt="Profile"
-                    className=" bg-contain"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <FaUserCircle size={80} className="w-full h-full" />
-                  </div>
-                )}
-              </div>
               <input
                 id="profilePicInput"
                 type="file"
@@ -156,7 +177,27 @@ const SellerProfile = () => {
                 onChange={handleProfilePicChange}
                 style={{ display: "none" }}
               />
+              <div
+                onClick={() =>
+                  document.getElementById("profilePicInput").click()
+                }
+                className="w-40 h-40 m-4 mt-8 mb-10 border border-black rounded-full overflow-hidden cursor-pointer"
+              >
+                {accountInformation.pfp ? (
+                  <img
+                    src={accountInformation.pfp} // Use the preview URL
+                    alt="Profile"
+                    className="bg-cover aspect-square"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <FaUserCircle size={80} className="w-full h-full" />
+                  </div>
+                )}
+              </div>
             </div>
+            <p className="text-green-600">{accountMessage}</p>
+            <br/>
             <button type="submit" className="button w-[200px]">
               Confirm Changes
             </button>
@@ -274,8 +315,8 @@ const SellerProfile = () => {
     <div>
       <label className="label">Paypal Account Number</label>
       <input
-        name="paypalNumber"
-        value={sellerInformation.paypalNumber}
+        name="paypalEmail"
+        value={sellerInformation.paypalEmail}
         onChange={handleSellerChange}
         className="input"
       />
@@ -307,7 +348,7 @@ const SellerProfile = () => {
         onChange={handleSellerChange}
         className="input"
       />
-    </div>
+    </div> 
     <div>
       <label className="label">
         Activated
@@ -323,8 +364,10 @@ const SellerProfile = () => {
     </div>
   </div>
 </div>
-
-<div className="flex justify-center">
+<br/>
+<p className="text-green-600">{sellerMessage}</p>
+<br/>
+<div className="">
               <button type="submit" className="button px-[20px] mt-4 ">
                 Confirm Changes
               </button>

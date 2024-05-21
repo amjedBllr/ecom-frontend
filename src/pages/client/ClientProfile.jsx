@@ -1,6 +1,4 @@
 import { useState } from "react";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import axios from 'axios';
 import { useEffect , useContext} from 'react';
 import App from '../../App.jsx'
@@ -61,12 +59,12 @@ const ClientProfile = () => {
       setAccountMessage("User information was patched successfully !!")
     } catch (error) {
       console.log(error);
+      setAccountMessage("Failed to patch user information !!")
     }
   };
 
   const handleClientSubmit = async (e) => {
     e.preventDefault();
-    console.log(clientInformation)
     try {
       setClientMessage("proccessing ...")
 
@@ -77,6 +75,7 @@ const ClientProfile = () => {
       setClientMessage("Client information was patched successfully !!")
     } catch (error) {
       console.log(error);
+      setClientMessage("Failed to patch client information !!")
     }
   };
 
@@ -126,6 +125,7 @@ const handleProfilePicChange = (e) => {
                   value={accountInformation.email}
                   onChange={handleAccountChange}
                   className="input"
+                  disabled
                 />
               </div>
               {/* UserName */}
