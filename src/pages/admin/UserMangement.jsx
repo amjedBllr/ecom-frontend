@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import ClientOrder from "../../components/ClientOrder.jsx";
 import UserCard from "../../components/Admin/UserCard.jsx";
-import ClientInfo from "../client/ClientInfo.jsx";
+import React, { useState, useEffect, useContext } from 'react';
+import App from '../../App';
+import axios from 'axios';
 
 const UserMangement = () => {
   let [filters, setFilters] = useState({
@@ -12,6 +12,9 @@ const UserMangement = () => {
   const handleShowInfoClick = () => {
     setClicked(!clicked);
   };
+  let [users,setUsers] = useState([])
+
+  const { serverUrl } = useContext(App.context);
 
   const handleClick = (event) => {
     const { name } = event.target;
@@ -20,6 +23,20 @@ const UserMangement = () => {
       [name]: !prev[name],
     }));
   };
+
+
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await axios.get(`${serverUrl}/api/v1/users`, { withCredentials: true });
+        setUsers(response.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData();
+  }, [serverUrl]);
 
   return (
     <div>
@@ -83,9 +100,12 @@ const UserMangement = () => {
               <hr className="w-full outline-none border-blue-500 my-4 opacity-80" />
             </div>
 
-            <UserCard userType={"client"} />
-            <UserCard userType={"seller"} />
-            <UserCard userType={"client"} />
+            {
+              users.map((user)=>{
+                return(<UserCard key ={user._id} user = {user} />)
+              })
+            }
+            
           </div>
         </div>
       </div>

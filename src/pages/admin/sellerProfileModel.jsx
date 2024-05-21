@@ -1,32 +1,37 @@
 import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 
-const SellerInfoModal = () => {
+const SellerInfoModal = (props) => {
   const [showModal, setShowModal] = useState(false);
 
   const handleCloseModal = () => {
     setShowModal(false);
   };
 
-  const sellerInformation = {
-    sellerType: "individual",
-    businessName: "daWhiteGuy",
-    businessAddress: "lhouma lfoulania fi alitigah al foulani",
-    businessEmail: "business@business.dz",
-    businessPhone: "+3218123498",
-    creditCardActivity: false,
-    paypalActivity: false,
-    edahabiaActivity: false,
-    commerceRegisterNumber: "283945987345",
-    creditCardNumber: "32405982340958",
-    paypalNumber: "9q8498572345",
-    edahabiaNumber: "9897359873245",
-  };
+  const {
+    email,username
+  } = props.user
+
+  const {
+    businessAddress,
+    businessEmail,
+    businessName,
+    businessPhone,
+    commerceRegisterNumber,
+    creditCardActivity,
+    edahabiaActivity,
+    identityCard,
+    creditCardNumber,
+    paypalEmail,
+    edahabiaNumber,
+    paypalActivity,
+    sellerType,
+    } = props.seller
 
   return (
     <>
       <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
         onClick={() => setShowModal(true)}
       >
         Show Seller Profile
@@ -36,7 +41,7 @@ const SellerInfoModal = () => {
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex justify-center">
           <div className="relative w-full max-w-4xl bg-white rounded-lg shadow-lg p-8">
             <button
-              className="absolute top-12 right-16 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+              className="absolute top-12 right-16 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded z-30"
               onClick={handleCloseModal}
             >
               <FaTimes />
@@ -53,7 +58,8 @@ const SellerInfoModal = () => {
                       <label className="label">Email</label>
                       <input
                         name="email"
-                        value="example@example.com"
+                        value={email}
+                        disabled
                         readOnly
                         className="input"
                       />
@@ -63,7 +69,8 @@ const SellerInfoModal = () => {
                       <label className="label">Username</label>
                       <input
                         name="username"
-                        value="exampleUser"
+                        value={username}
+                        disabled
                         readOnly
                         className="input"
                       />
@@ -74,7 +81,8 @@ const SellerInfoModal = () => {
                     <label className="label">Password</label>
                     <input
                       name="password"
-                      value="examplePassword"
+                      value="***********"
+                      disabled
                       readOnly
                       className="input"
                     />
@@ -92,7 +100,8 @@ const SellerInfoModal = () => {
                       <label className="label">Business name</label>
                       <input
                         name="businessName"
-                        value={sellerInformation.businessName}
+                        value={businessName}
+                        disabled
                         readOnly
                         className="input"
                       />
@@ -102,7 +111,8 @@ const SellerInfoModal = () => {
                       <label className="label">Seller type</label>
                       <select
                         name="sellerType"
-                        value={sellerInformation.sellerType}
+                        value={sellerType}
+                        disabled
                         readOnly
                         className="w-[80%] px-3 py-2 text-black border border-gray-300 rounded-md bg-white text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       >
@@ -117,7 +127,8 @@ const SellerInfoModal = () => {
                       <label className="label">Business phone number</label>
                       <input
                         name="businessPhone"
-                        value={sellerInformation.businessPhone}
+                        value={businessPhone}
+                        disabled
                         readOnly
                         className="input"
                       />
@@ -127,7 +138,8 @@ const SellerInfoModal = () => {
                       <input
                         type="text"
                         name="businessEmail"
-                        value={sellerInformation.businessEmail}
+                        value={businessEmail}
+                        disabled
                         readOnly
                         className="input"
                       />
@@ -139,7 +151,8 @@ const SellerInfoModal = () => {
                       <label className="label">Business address</label>
                       <input
                         name="businessAddress"
-                        value={sellerInformation.businessAddress}
+                        value={businessAddress}
+                        disabled
                         readOnly
                         className="input"
                       />
@@ -148,7 +161,8 @@ const SellerInfoModal = () => {
                       <label className="label">Commerce register number</label>
                       <input
                         name="commerceRegisterNumber"
-                        value={sellerInformation.commerceRegisterNumber}
+                        value={commerceRegisterNumber}
+                        disabled
                         readOnly
                         className="input"
                       />
@@ -161,7 +175,8 @@ const SellerInfoModal = () => {
                         <label className="label">Credit Card Number</label>
                         <input
                           name="creditCardNumber"
-                          value={sellerInformation.creditCardNumber}
+                          value={creditCardNumber}
+                          disabled
                           readOnly
                           className="input"
                         />
@@ -172,7 +187,8 @@ const SellerInfoModal = () => {
                           type="checkbox"
                           id="creditCardActivity"
                           name="creditCardActivity"
-                          checked={sellerInformation.creditCardActivity}
+                          checked={creditCardActivity}
+                          disabled
                           readOnly
                           className="h-8 "
                         />
@@ -186,7 +202,8 @@ const SellerInfoModal = () => {
                         <label className="label">Paypal Account Number</label>
                         <input
                           name="paypalNumber"
-                          value={sellerInformation.paypalNumber}
+                          value={paypalEmail}
+                          disabled
                           readOnly
                           className="input"
                         />
@@ -197,7 +214,8 @@ const SellerInfoModal = () => {
                           type="checkbox"
                           id="paypalActivity"
                           name="paypalActivity"
-                          checked={sellerInformation.paypalActivity}
+                          checked={paypalActivity}
+                          disabled
                           readOnly
                           className="h-8"
                         />
@@ -211,7 +229,8 @@ const SellerInfoModal = () => {
                         <label className="label">Edahabia Account Number</label>
                         <input
                           name="edahabiaNumber"
-                          value={sellerInformation.edahabiaNumber}
+                          value={edahabiaNumber}
+                          disabled
                           readOnly
                           className="input"
                         />
@@ -222,9 +241,14 @@ const SellerInfoModal = () => {
                           type="checkbox"
                           id="edahabiaActivity"
                           name="edahabiaActivity"
-                          checked={sellerInformation.edahabiaActivity}
+                          checked={edahabiaActivity}
                           readOnly
                           className="h-8"
+                        />
+                      </div>
+                      <div className="flex flex-col items-start justify-start">
+                        <label className="label">Identity card :</label>{" "}
+                        <img src={identityCard}
                         />
                       </div>
                     </div>
