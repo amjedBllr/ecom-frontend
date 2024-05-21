@@ -1,5 +1,5 @@
 import ProductCard from "../../components/ProductCard.jsx";
-import { useParams , useLocation } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import axios from 'axios';
 import { useEffect, useContext, useState, useRef } from 'react';
 import App from '../../App.jsx';
@@ -7,9 +7,8 @@ import Loading from "../../components/Loading.jsx";
 
 const CategoryPage = () => {
   const { category } = useParams();
-  console.log(category)
-  const [cat , setCat] = useState('')
-  const [type , setType] = useState(category)
+  const [cat, setCat] = useState('');
+  const [type, setType] = useState(category);
   const [page, setPage] = useState(1);
   const [products, setProducts] = useState([]);
   const [message, setMessage] = useState("");
@@ -28,50 +27,45 @@ const CategoryPage = () => {
       console.error(error);
       setProducts([]);
       setMessage(error.response.data.message);
-    }
-    finally{
-      setIsLoading(false)
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    handleSearch();
-    if (resultsRef.current) {
-      resultsRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [cat,page]);
-
-
-  useEffect( () => {
-    setIsLoading(true)
-    const fetchData = async ()=>{
+    setIsLoading(true);
+    const fetchCategory = async () => {
       try {
-        const cat = await axios.get(`${serverUrl}/api/v1/types/${category}`,{withCredentials:true});
-        setCat(cat.data.data.categoryName)
+        const catResponse = await axios.get(`${serverUrl}/api/v1/types/${category}`, { withCredentials: true });
+        setCat(catResponse.data.data.categoryName);
+        setType(category); // Update type to match category
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-      
+    };
+
+    fetchCategory();
+  }, [category]);
+
+  useEffect(() => {
+    if (cat) {
+      handleSearch();
     }
-    fetchData()
-    setType(category)
-  }, [,category]);
+  }, [cat, type, page]);
 
   if (isLoading) {
-    return <Loading/>;
+    return <Loading />;
   }
 
   return (
     <>
-    <div class="title-container w-full bg-orange-400">
-      <h1 ref={resultsRef} class="text-3xl font-bold my-8 p-10">
-      <span class="title-text text-5xl">{cat}</span><br/><br/>
-      <span class="category-label pl-5">{type} :</span>
-  </h1>
-
-  <p class="subtitle text-lg font-medium mt-2">
-    </p>
-</div>
+      <div className="title-container w-full bg-orange-400">
+        <h1 ref={resultsRef} className="text-3xl font-bold my-8 p-10">
+          <span className="title-text text-5xl">{cat}</span><br /><br />
+          <span className="category-label pl-5">{type} :</span>
+        </h1>
+        <p className="subtitle text-lg font-medium mt-2"></p>
+      </div>
 
       <div className="grid grid-cols-5 gap-x-8 gap-y-8 padding-x sm:flex sm:flex-col my-12">
         {products.map((product, index) => (
@@ -93,14 +87,18 @@ const CategoryPage = () => {
             setPage(prev => Math.max(prev - 1, 1));
           }}
           className="px-4 py-2 bg-blue-500 text-white rounded"
-        >prev page</button>
+        >
+          Prev Page
+        </button>
         <p className="font-semibold">{page}</p>
         <button
           onClick={() => {
             setPage(prev => prev + 1);
           }}
           className="px-4 py-2 bg-blue-500 text-white rounded"
-        >next page</button>
+        >
+          Next Page
+        </button>
       </div>
     </>
   );
