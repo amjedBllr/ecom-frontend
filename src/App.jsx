@@ -45,7 +45,7 @@ import Loading from "./components/Loading.jsx";
 import Logout from "./pages/Auth/Logout.jsx";
 import Header from "./components/Header.jsx";
 import Footer from "./components/Footer.jsx";
-
+import Help from "./pages/Help.jsx"
 
 
 
@@ -124,6 +124,7 @@ function App() {
                               <Route path='about-us' element={<AboutUs/>}/>
                               <Route path='profile' element={<ClientProfile/>}/>
                               <Route path="cart" element={<CheckOut />} />
+                              <Route path="help" element={<Help/>} />
                               <Route path="products/type/:category" element={<CategoryPage />} />
                               <Route path="product/:id" element={<ClientProductPage />} />
                               <Route path='payment/:id' element={<Payment />}/>
@@ -139,6 +140,7 @@ function App() {
                           <Route path='/seller' element={<SellerLayout/>}>
                               <Route path='profile' element={<SellerProfile/>}/>
                               <Route path='about-us' element={<AboutUs/>}/>
+                              <Route path="help" element={<Help/>} />
                               <Route path='*' element={<NotFoundPage/>}/>
                               <Route path="product/:id" element={<SellerEditProduct/>} />
                           </Route>
@@ -153,7 +155,7 @@ function App() {
                   {userRole === 'admin' && (
                       <>
                         <Route path="/admin" element={<AdminLayout />}>
-                            <Route path="help" element={<>help Page</>} />
+                            <Route path="help" element={<ReportTreatment />} />
                             <Route path="about-us" element={<AboutUs />} />
                             <Route path="profile" element={<AdminProfile />} />
                             <Route path="*" element={<NotFoundPage/>} />
